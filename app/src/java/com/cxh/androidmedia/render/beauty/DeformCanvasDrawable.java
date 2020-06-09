@@ -68,7 +68,12 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArray));
         GLES30.glEnableVertexAttribArray(mTextureHandler);
 
-        float[] vertexIndex = {0, 1, 2, 0, 2, 3};
+        float[] sclaeArray = { mWhiteScale };
+        mWhiteScaleHandler = GLES30.glGetAttribLocation(mGLProgram, "whiteScale");
+        GLES30.glVertexAttribPointer(mWhiteScaleHandler, 1, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(sclaeArray));
+        GLES30.glEnableVertexAttribArray(mWhiteScaleHandler);
+
+        short[] vertexIndex = {0, 1, 2, 0, 2, 3};
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mBgTexture.mTextureId);
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
