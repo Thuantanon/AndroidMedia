@@ -1,11 +1,13 @@
 package com.cxh.androidmedia.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -20,13 +22,39 @@ import java.util.Locale;
  */
 public class FileUtil {
 
-    private static final String ROOT_NAME = "andmedia";
+    private static final String ROOT_NAME = "AndMedia";
     private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + ROOT_NAME;
 
     public static final String PATH_AUDIO = ROOT_PATH + File.separator + "audio";
     public static final String PATH_VIDEO = ROOT_PATH + File.separator + "video";
     public static final String PATH_IMAGE = ROOT_PATH + File.separator + "image";
 
+    static {
+
+        File fileRoot = new File(ROOT_PATH);
+        if (!fileRoot.exists() || !fileRoot.isDirectory()) {
+            boolean result = fileRoot.mkdirs();
+            CCLog.i("init root dir : " + result);
+        }
+
+        File audioDir = new File(PATH_AUDIO);
+        if (!audioDir.exists() || !audioDir.isDirectory()) {
+            boolean result = audioDir.mkdir();
+            CCLog.i("init audio dir : " + result);
+        }
+
+        File videoDir = new File(PATH_VIDEO);
+        if (!videoDir.exists() || !videoDir.isDirectory()) {
+            boolean result = videoDir.mkdir();
+            CCLog.i("init video dir : " + result);
+        }
+
+        File imageDir = new File(PATH_IMAGE);
+        if (!imageDir.exists() || !imageDir.isDirectory()) {
+            boolean result = imageDir.mkdir();
+            CCLog.i("init image dir : " + result);
+        }
+    }
 
     public static String getRandomPCMFile() {
         File file = new File(PATH_AUDIO);
@@ -103,5 +131,21 @@ public class FileUtil {
             tryClose(in);
         }
         return "";
+    }
+
+    public static void saveBitmapToStorage(int[] data, int width, int height, String path) {
+        Bitmap bitmap = null;
+        try {
+            FileOutputStream outputStream = new FileOutputStream(path);
+            bitmap = Bitmap.createBitmap(data, width, height, Bitmap.Config.ARGB_8888);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            CCLog.i("图像已写入到：" + path);
+        } catch (Exception e) {
+            CCLog.i("写入失败：" + e.toString());
+        } finally {
+            if (null != bitmap) {
+                bitmap.recycle();
+            }
+        }
     }
 }

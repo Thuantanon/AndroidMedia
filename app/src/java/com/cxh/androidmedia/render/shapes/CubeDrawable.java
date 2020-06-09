@@ -266,7 +266,6 @@ public class CubeDrawable extends BaseDrawable {
         float[] targetMatrix = new float[16];
         Matrix.setIdentityM(viewMatrix, 0);
         Matrix.setRotateM(viewMatrix, 0, mCameraAngle, 1f, -1, -1);
-
         Matrix.multiplyMM(targetMatrix, 0, viewMatrix, 0, matrix, 0);
 
         return targetMatrix;

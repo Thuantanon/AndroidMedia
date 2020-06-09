@@ -5,6 +5,8 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+    <color name="halfBlack">#60000000</color>
 
     <color name="colorBlack3">#333333</color>
     <color name="colorBlack6">#666666</color>
@@ -13,8 +15,8 @@
 
     <color name="colorRed">#ff0000</color>
     <color name="colorTransparent">#00000000</color>
-    <color name="colorAccentNormal">#80D81B60</color>
-    <color name="colorAccentPressed">#A0D81B60</color>
+    <color name="colorAccentNormal">#b2D81B60</color>
+    <color name="colorAccentPressed">#ffD81B60</color>
 
 
 </resources>

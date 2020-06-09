@@ -1,6 +1,7 @@
 package com.cxh.androidmedia.render.beauty;
 
 import android.opengl.GLES30;
+import android.opengl.Matrix;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.AMApp;
@@ -9,6 +10,8 @@ import com.cxh.androidmedia.render.bean.BitmapTexture;
 import com.cxh.androidmedia.utils.BitsUtil;
 import com.cxh.androidmedia.utils.FileUtil;
 import com.cxh.androidmedia.utils.OpenGLUtils;
+
+import java.nio.IntBuffer;
 
 /**
  * Created by Cxh
@@ -28,6 +31,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
 
     private int mCurrentAngle;
     private float mWhiteScale;
+    private float mSizeScale;
 
     public DeformCanvasDrawable() {
 
@@ -56,19 +60,21 @@ public class DeformCanvasDrawable extends BaseDrawable {
 
         GLES30.glUseProgram(mGLProgram);
         mMatrixHandler = GLES30.glGetUniformLocation(mGLProgram, "uMatrix");
-        GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, matrix, 0);
+        float[] combineMatrix = setRotateM(matrix, mCurrentAngle);
+        GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, combineMatrix, 0);
+
 
         float[] vertexArray = getPositionArray(mBgTexture.mVertexScaleX, mBgTexture.mVertexScaleY);
         mVertexHandler = GLES30.glGetAttribLocation(mGLProgram, "vertexPosition");
         GLES30.glVertexAttribPointer(mVertexHandler, 3, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(vertexArray));
         GLES30.glEnableVertexAttribArray(mVertexHandler);
 
-        float[] texArray = { 0, 0, 1f, 0, 1f, 1f, 0, 1f};
+        float[] texArray = {0, 0, 1f, 0, 1f, 1f, 0, 1f};
         mTextureHandler = GLES30.glGetAttribLocation(mGLProgram, "textureCoord");
         GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArray));
         GLES30.glEnableVertexAttribArray(mTextureHandler);
 
-        float[] sclaeArray = { mWhiteScale };
+        float[] sclaeArray = {mWhiteScale};
         mWhiteScaleHandler = GLES30.glGetAttribLocation(mGLProgram, "whiteScale");
         GLES30.glVertexAttribPointer(mWhiteScaleHandler, 1, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(sclaeArray));
         GLES30.glEnableVertexAttribArray(mWhiteScaleHandler);
@@ -86,6 +92,9 @@ public class DeformCanvasDrawable extends BaseDrawable {
     }
 
     private float[] getPositionArray(float x, float y) {
+        float sizeScale = Math.min(1.0f - mSizeScale, 1.0f);
+        x *= sizeScale;
+        y *= sizeScale;
         return new float[]{
                 -x, y, 0,
                 x, y, 0,
@@ -94,7 +103,35 @@ public class DeformCanvasDrawable extends BaseDrawable {
         };
     }
 
+    private float[] setRotateM(float[] matrix, int rotateAngle) {
+        float[] viewMatrix = new float[16];
+        float[] targetMatrix = new float[16];
+        Matrix.setIdentityM(viewMatrix, 0);
+        Matrix.setRotateM(viewMatrix, 0, rotateAngle, 0f, 0f, 1f);
+        Matrix.multiplyMM(targetMatrix, 0, viewMatrix, 0, matrix, 0);
+        return targetMatrix;
+    }
+
+    /**
+     * 采用glReadPixels获取屏幕数据
+     *
+     * @return
+     */
+    public int[] getImagePixelData(int x, int y, int width, int height) {
+        IntBuffer byteBuffer = IntBuffer.allocate(width * height);
+        GLES30.glReadPixels(x, y, width, height, GLES30.GL_RGBA, GLES30.GL_UNSIGNED_INT, byteBuffer);
+        return byteBuffer.array();
+    }
+
     public void setWhiteScale(float whiteScale) {
         mWhiteScale = whiteScale;
+    }
+
+    public void setCurrentAngle(int currentAngle) {
+        mCurrentAngle = currentAngle;
+    }
+
+    public void setSizeScale(float sizeScale) {
+        mSizeScale = sizeScale;
     }
 }

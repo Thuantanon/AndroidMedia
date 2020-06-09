@@ -28,6 +28,10 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
+        <!-- 全面屏适配, 设置最大屏幕比例 -->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.5" /> <!-- AppID -->
 
         <activity
             android:name=".MainActivity"

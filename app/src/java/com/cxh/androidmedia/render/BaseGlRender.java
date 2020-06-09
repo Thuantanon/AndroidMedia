@@ -70,6 +70,13 @@ public abstract class BaseGlRender implements GLSurfaceView.Renderer {
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT | GLES30.GL_DEPTH_BUFFER_BIT);
         // 开启深度测试，防止出现穿透
         GLES30.glEnable(GLES30.GL_DEPTH_TEST);
+    }
 
+    public int getSurfaceWidth() {
+        return mSurfaceWidth;
+    }
+
+    public int getSurfaceHeight() {
+        return mSurfaceHeight;
     }
 }
