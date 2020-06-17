@@ -17,6 +17,7 @@
     <color name="colorTransparent">#00000000</color>
     <color name="colorAccentNormal">#b2D81B60</color>
     <color name="colorAccentPressed">#ffD81B60</color>
+    <color name="colorBlue">#47a2f5</color>
 
 
 </resources>

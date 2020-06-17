@@ -6,6 +6,8 @@ import android.opengl.Matrix;
 
 import androidx.annotation.CallSuper;
 
+import com.cxh.androidmedia.utils.CCLog;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -23,6 +25,7 @@ public abstract class BaseGlRender implements GLSurfaceView.Renderer {
     @CallSuper
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        CCLog.i("onSurfaceCreated : " + config.toString());
         // 清空屏幕颜色
         GLES30.glClearColor(0f, 0f, 0f, 1.0f);
 
@@ -31,6 +34,7 @@ public abstract class BaseGlRender implements GLSurfaceView.Renderer {
     @CallSuper
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        CCLog.i("onSurfaceChanged : " + width + " , " + height);
 
         // 设置画布的大小
         GLES30.glViewport(0, 0, width, height);

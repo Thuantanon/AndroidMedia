@@ -1,16 +1,14 @@
 package com.cxh.androidmedia;
 
 import android.Manifest;
-import android.content.Intent;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cxh.androidmedia.activity.AudioRecordActivity;
+import com.cxh.androidmedia.activity.GLRender1Activity;
 import com.cxh.androidmedia.activity.GLRender2Activity;
 import com.cxh.androidmedia.activity.GLRender3Activity;
-import com.cxh.androidmedia.activity.GLRender4Activity;
-import com.cxh.androidmedia.activity.GLRender1Activity;
 import com.cxh.androidmedia.activity.GLRender5Activity;
 import com.cxh.androidmedia.activity.MediaCodec1Activity;
 import com.cxh.androidmedia.activity.MediaCodec2Activity;
@@ -61,8 +59,8 @@ public class MainActivity extends BaseActivity {
         beans.add(new ActivityBean("多种图片显示方式", ShowImageActivity.class));
         beans.add(new ActivityBean("OpenGL ES基础绘制", GLRender1Activity.class));
         beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印", GLRender2Activity.class));
+        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO离屏渲染", GLRender3Activity.class));
         beans.add(new ActivityBean("OpenGL ES、OpenCV实现高级美颜", GLRender3Activity.class));
-        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO离屏渲染", GLRender4Activity.class));
         beans.add(new ActivityBean("使用GLSurfaceView预览Camera", GLRender5Activity.class));
         beans.add(new ActivityBean("音频录制，播放，wav读写", AudioRecordActivity.class));
         beans.add(new ActivityBean("视频预览，获取NV21数据", VideoRecorderActivity.class));
@@ -101,11 +99,6 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 });
-    }
-
-    @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
     }
 
     @Override

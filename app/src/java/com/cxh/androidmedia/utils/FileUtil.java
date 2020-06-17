@@ -136,16 +136,25 @@ public class FileUtil {
     public static void saveBitmapToStorage(int[] data, int width, int height, String path) {
         Bitmap bitmap = null;
         try {
-            FileOutputStream outputStream = new FileOutputStream(path);
             bitmap = Bitmap.createBitmap(data, width, height, Bitmap.Config.ARGB_8888);
+            saveBitmapToStorage(bitmap, path);
+        } finally {
+            if (null != bitmap) {
+                bitmap.recycle();
+            }
+        }
+    }
+
+    public static void saveBitmapToStorage(Bitmap bitmap, String path) {
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(path);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             CCLog.i("图像已写入到：" + path);
         } catch (Exception e) {
             CCLog.i("写入失败：" + e.toString());
         } finally {
-            if (null != bitmap) {
-                bitmap.recycle();
-            }
+            tryClose(outputStream);
         }
     }
 }

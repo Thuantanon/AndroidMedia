@@ -126,7 +126,7 @@ public class ImageDrawable extends BaseDrawable {
         GLES30.glDisableVertexAttribArray(mMatrixHandler);
         GLES30.glDisableVertexAttribArray(mPositionHandler);
         GLES30.glDisableVertexAttribArray(mTextureHandler);
-
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
     }
 
     @Override

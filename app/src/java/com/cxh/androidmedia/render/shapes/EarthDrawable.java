@@ -122,7 +122,7 @@ public class EarthDrawable extends BaseDrawable {
         GLES30.glDisableVertexAttribArray(mMatrixHandler);
         GLES30.glDisableVertexAttribArray(mPositionHandler);
         GLES30.glDisableVertexAttribArray(mTextureHandler);
-
+        GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
     }
 
     @Override
@@ -143,7 +143,6 @@ public class EarthDrawable extends BaseDrawable {
         float[] targetMatrix = new float[16];
         Matrix.setIdentityM(viewMatrix, 0);
         Matrix.setRotateM(viewMatrix, 0, mCameraAngle, 0f, 1f, 0f);
-
         Matrix.multiplyMM(targetMatrix, 0, viewMatrix, 0, matrix, 0);
 
         return targetMatrix;

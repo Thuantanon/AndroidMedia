@@ -1,9 +1,15 @@
 package com.cxh.androidmedia.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
+import android.os.Message;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -14,7 +20,10 @@ import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.ClassicDrawRender;
 import com.cxh.androidmedia.render.IDrawableProvider;
 import com.cxh.androidmedia.render.beauty.DeformCanvasDrawable;
+import com.cxh.androidmedia.utils.DimenUtil;
 import com.cxh.androidmedia.utils.FileUtil;
+import com.cxh.androidmedia.utils.ToastUtil;
+import com.cxh.androidmedia.view.ShotcutFrameLayout;
 
 import java.io.File;
 
@@ -27,6 +36,8 @@ import butterknife.OnClick;
  * Desc : OpenGL ES实现简单图片处理
  */
 public class GLRender2Activity extends BaseActivity implements IDrawableProvider, SeekBar.OnSeekBarChangeListener {
+
+    public static final int MSG_SHOW_IMAGE_DIALOG = 1;
 
     @BindView(R.id.gl_surfaceview)
     GLSurfaceView mSurfaceView;
@@ -46,6 +57,13 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
     SeekBar mSBRotate;
     @BindView(R.id.tv_rotate_progress)
     TextView mTvRotateProgress;
+    @BindView(R.id.ctv_open_watermark)
+    CheckedTextView mCtvOpenWatermark;
+    @BindView(R.id.ctv_open_shotcut)
+    CheckedTextView mCtvShotcut;
+    @BindView(R.id.fl_shotcut)
+    ShotcutFrameLayout mFlShotcut;
+
 
     private ClassicDrawRender mDrawRender;
     private DeformCanvasDrawable mDeformDrawable;
@@ -70,17 +88,18 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
         mSBWhite.setOnSeekBarChangeListener(this);
         mSBScale.setOnSeekBarChangeListener(this);
         mSBRotate.setOnSeekBarChangeListener(this);
+
     }
 
     @Override
     public BaseDrawable getDrawable() {
-        mDeformDrawable = new DeformCanvasDrawable();
+        mDeformDrawable = new DeformCanvasDrawable(getHandler());
         return mDeformDrawable;
     }
 
 
     @Override
-    @OnClick({R.id.iv_check_updown, R.id.btn_save})
+    @OnClick({R.id.iv_check_updown, R.id.ctv_open_watermark, R.id.ctv_open_shotcut, R.id.btn_save})
     public void onViewClick(View view) {
         super.onViewClick(view);
         switch (view.getId()) {
@@ -89,12 +108,31 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
                 setPannelHidden(!mIvCheckUpdown.isChecked());
             }
             break;
+            case R.id.ctv_open_watermark: {
+                mCtvOpenWatermark.toggle();
+
+            }
+            break;
+            case R.id.ctv_open_shotcut: {
+                mCtvShotcut.toggle();
+                mFlShotcut.setOpenShotcut(mCtvShotcut.isChecked());
+            }
+            break;
             case R.id.btn_save: {
-                int width = mDrawRender.getSurfaceWidth();
-                int height = mDrawRender.getSurfaceHeight();
-                int[] data = mDeformDrawable.getImagePixelData(0,0, width, height);
-                String filePath = FileUtil.PATH_IMAGE + File.separator + "render2_" + System.currentTimeMillis() + ".jpg";
-                FileUtil.saveBitmapToStorage(data, width, height, filePath);
+                mDeformDrawable.setSaveImage(true);
+                if (mCtvShotcut.isChecked()) {
+                    if (mFlShotcut.isShotcutEnable()) {
+                        mDeformDrawable.setShotRect(mFlShotcut.getShotcutRectF());
+                        mSurfaceView.requestRender();
+
+                    } else {
+                        ToastUtil.show(mContext, "触摸显示裁剪范围");
+                    }
+                } else {
+                    mDeformDrawable.setShotRect(null);
+                    mSurfaceView.requestRender();
+                }
+
             }
             break;
         }
@@ -128,7 +166,7 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
             mDeformDrawable.setSizeScale(scale);
             mTvScaleProgress.setText(getString(R.string.white_scale, progress));
             mSurfaceView.requestRender();
-        } else if ( seekBar == mSBRotate) {
+        } else if (seekBar == mSBRotate) {
 
             mDeformDrawable.setCurrentAngle(progress);
             mTvRotateProgress.setText(getString(R.string.white_rotate, progress));
@@ -144,5 +182,53 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    protected void handleMessage(Message message) {
+        super.handleMessage(message);
+        if (MSG_SHOW_IMAGE_DIALOG == message.what) {
+            Bitmap bitmap = (Bitmap) message.obj;
+            int width = message.arg1;
+            int height = message.arg2;
+            showScreenshotImage(bitmap, width, height);
+        }
+    }
+
+
+    private void showScreenshotImage(final Bitmap bitmap, final int width, final int height) {
+        final View rootView = getLayoutInflater().inflate(R.layout.dialog_show_image_dilaog, null);
+        ImageView ivPicture = rootView.findViewById(R.id.iv_image);
+        int widthPixel = DimenUtil.dp2Px(mContext, 250);
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) ivPicture.getLayoutParams();
+        layoutParams.width = widthPixel;
+        layoutParams.height = (int) (widthPixel * height * 1f / width);
+        ivPicture.setLayoutParams(layoutParams);
+        ivPicture.setImageBitmap(bitmap);
+
+        Dialog dialog = new AlertDialog.Builder(mContext)
+                .setTitle("保存截图")
+                .setView(rootView)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StringBuilder sb = new StringBuilder(FileUtil.PATH_IMAGE);
+                        sb.append(File.separator);
+                        sb.append("gles_screenshot_");
+                        sb.append(System.currentTimeMillis());
+                        sb.append(".jpg");
+
+                        FileUtil.saveBitmapToStorage(bitmap, sb.toString());
+                    }
+                })
+                .setCancelable(true)
+                .create();
+        dialog.show();
     }
 }

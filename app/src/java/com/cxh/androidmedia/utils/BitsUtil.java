@@ -38,6 +38,16 @@ public class BitsUtil {
         return intBuffer;
     }
 
+    public static IntBuffer arraysToBuffer(byte[] buffer) {
+        IntBuffer intBuffer;
+        // Int占4个字节
+        ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        intBuffer = byteBuffer.asIntBuffer();
+        intBuffer.position(0);
+        return intBuffer;
+    }
+
     public static FloatBuffer arraysToBuffer(float[] buffer) {
         FloatBuffer intBuffer;
         // Float占4个字节

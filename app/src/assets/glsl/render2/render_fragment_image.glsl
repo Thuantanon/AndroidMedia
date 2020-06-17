@@ -2,10 +2,15 @@ precision mediump float;
 uniform sampler2D mTextureUnit;
 varying vec2 mTexCoord;
 varying float mWhiteScale;
-void main() {
+
+void main()
+{
      vec4 color = texture2D(mTextureUnit, mTexCoord);
-     color.r = max(min(color.r + mWhiteScale, 1.0f), 0.0f);
-     color.g = max(min(color.g + mWhiteScale, 1.0f), 0.0f);
-     color.b = max(min(color.b + mWhiteScale, 1.0f), 0.0f);
+     float R = color.r;
+     float G = color.g;
+     float B = color.b;
+     color.r = R + (1.0f - R) * mWhiteScale;
+     color.g = G + (1.0f - G) * mWhiteScale;
+     color.b = B + (1.0f - B) * mWhiteScale;
      gl_FragColor = color;
 }
