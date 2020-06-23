@@ -2,7 +2,7 @@ package com.cxh.androidmedia.render.bean;
 
 /**
  * Created by Cxh
- * Time : 2020-06-02  03:02
+ * Time : 2019-06-02  03:02
  * Desc :
  */
 public class GLPoint2 {

@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
-                android:text="亮度(0)"
+                android:text="美白(0)"
                 android:gravity="center"
                 android:minWidth="70dp"
                 android:layout_marginStart="10dp"

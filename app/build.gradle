@@ -8,7 +8,24 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_TOOL_CHAIN=clang"
+                // cppFlags ""
+            }
+        }
+        ndk {
+            moduleName "android_media"
+            abiFilters 'armeabi-v7a' // , 'arm64-v8a'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
+            // cppFlags ""
+        }
     }
 
     sourceSets {
@@ -16,7 +33,7 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDir 'src/java'
             jni.srcDir 'src/jni'
-            jniLibs.srcDir 'src/jni'
+            jniLibs.srcDir 'src/jni/libs'
             assets.srcDir 'src/assets'
             res.srcDir 'src/res'
         }
@@ -38,6 +55,11 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    externalNativeBuild {
+        cmake {
+            path file('CMakeLists.txt')
+        }
     }
 }
 

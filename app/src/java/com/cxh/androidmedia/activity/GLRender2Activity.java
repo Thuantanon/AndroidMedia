@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
+import com.cxh.androidmedia.jni.OpenGLHelper;
 import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.ClassicDrawRender;
 import com.cxh.androidmedia.render.IDrawableProvider;
@@ -92,6 +93,18 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mSurfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSurfaceView.onPause();
+    }
+
+    @Override
     public BaseDrawable getDrawable() {
         mDeformDrawable = new DeformCanvasDrawable(getHandler());
         return mDeformDrawable;
@@ -110,7 +123,8 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
             break;
             case R.id.ctv_open_watermark: {
                 mCtvOpenWatermark.toggle();
-
+                mDeformDrawable.setDrawWater(mCtvOpenWatermark.isChecked());
+                mSurfaceView.requestRender();
             }
             break;
             case R.id.ctv_open_shotcut: {

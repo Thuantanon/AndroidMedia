@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
+import com.cxh.androidmedia.jni.OpenGLHelper;
 import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.BaseGlRender;
 import com.cxh.androidmedia.render.shapes.CubeDrawable;
@@ -89,6 +90,18 @@ public class GLRender1Activity extends BaseActivity {
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSurfaceView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSurfaceView.onPause();
     }
 
 

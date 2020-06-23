@@ -20,4 +20,16 @@ public class GLRender3Activity extends BaseActivity {
     protected void init() {
 
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        mSurfaceView.onResume();
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        mSurfaceView.onPause();
+//    }
 }

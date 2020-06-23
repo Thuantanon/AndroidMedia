@@ -2,7 +2,7 @@ package com.cxh.androidmedia.render.bean;
 
 /**
  * Created by Cxh
- * Time : 2020-06-02  03:00
+ * Time : 2019-06-02  03:00
  * Desc :
  */
 public class GLTriangle3 {

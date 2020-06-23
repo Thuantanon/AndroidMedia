@@ -64,10 +64,10 @@ public class RectDrawable extends BaseDrawable {
         GLES30.glAttachShader(mGLTextureID, fsh);
         // 创建OpenGL ES程序可执行文件
         GLES30.glLinkProgram(mGLTextureID);
-        // 使纹理生效
+        // 使程序生效
         GLES30.glValidateProgram(mGLTextureID);
 
-        // 删除着色器
+        // 删除着色器指针
         GLES30.glDeleteShader(vsh);
         GLES30.glDeleteShader(fsh);
 

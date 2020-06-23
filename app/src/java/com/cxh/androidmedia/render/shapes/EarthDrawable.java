@@ -74,10 +74,10 @@ public class EarthDrawable extends BaseDrawable {
         GLES30.glAttachShader(mGLProgram, fsh);
         // 创建OpenGL ES程序可执行文件
         GLES30.glLinkProgram(mGLProgram);
-        // 使纹理生效
+        // 使程序生效
         GLES30.glValidateProgram(mGLProgram);
 
-        // 删除着色器
+        // 删除着色器指针
         GLES30.glDeleteShader(vsh);
         GLES30.glDeleteShader(fsh);
 
@@ -245,7 +245,7 @@ public class EarthDrawable extends BaseDrawable {
         // 将对象转为顶点数组(3个点 * 3个轴xyz、纹理是UV两个轴)
         mVertexArray = new float[triangles.size() * 9];
         mTextureArray = new float[textureArray.size() * 6];
-        CCLog.i("mVertexArray : " + mVertexArray.length + " , mTextureArray : " + mTextureArray.length);
+        CCLog.i("vertex count : " + mVertexArray.length);
         for (int i = 0; i < triangles.size(); i++) {
             GLTriangle3 triangle3 = triangles.get(i);
             GLTriangle2 triangle2 = textureArray.get(i);
