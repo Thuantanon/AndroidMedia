@@ -14,7 +14,6 @@ GlDrawer::GlDrawer() {
 }
 
 GlDrawer::~GlDrawer() {
-//    glDeleteProgram(mGLProgram);
 
 }
 
@@ -22,8 +21,6 @@ void GlDrawer::glInit(JNIEnv *jniEnv, jobject assetsManger) {
 
     const char *vertexShaderPath = "glsl/render2/render_vertex_image.glsl";
     const char *fragmentShaderPath = "glsl/render2/render_fragment_image.glsl";
-    char *const *vertexShader = nullptr;
-    char *const *fragShader = nullptr;
     // 从Android assets加载渲染器
     AAssetManager *aAssetManager = AAssetManager_fromJava(jniEnv, assetsManger);
     AAsset *aAsset = AAssetManager_open(aAssetManager, vertexShaderPath, AASSET_MODE_UNKNOWN);
@@ -91,6 +88,7 @@ void GlDrawer::glDrawFrame() {
 }
 
 void GlDrawer::glRelease() {
+    glDeleteProgram(mGLProgram);
 
     delete this->vertexShader;
     delete this->fragShader;

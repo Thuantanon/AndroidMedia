@@ -1,4 +1,4 @@
-package com.cxh.androidmedia.render.shapes;
+package com.cxh.androidmedia.render.filters;
 
 import android.opengl.GLES30;
 

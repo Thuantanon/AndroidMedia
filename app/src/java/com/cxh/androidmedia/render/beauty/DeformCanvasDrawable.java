@@ -31,18 +31,21 @@ public class DeformCanvasDrawable extends BaseDrawable {
     private BitmapTexture mBgTexture;
     private BitmapTexture mWaterTexture;
 
+    private Handler mMainHandler;
+    private RectF mShotRect;
+
     private int mGLProgram;
     private int mMatrixHandler;
     private int mVertexHandler;
     private int mTextureHandler;
     private int mWhiteScaleHandler;
+    private int mFilterHandler;
 
     private int mCurrentAngle;
+    private int mCurrentFilter;
     private float mWhiteScale;
     private float mSizeScale;
-    private RectF mShotRect;
 
-    private Handler mMainHandler;
     private boolean mIsSaveImage;
     private boolean mDrawWater;
 
@@ -83,6 +86,11 @@ public class DeformCanvasDrawable extends BaseDrawable {
         float[] combineMatrix = setRotateM(matrix, mCurrentAngle);
         GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, combineMatrix, 0);
 
+        mFilterHandler = GLES30.glGetUniformLocation(mGLProgram, "mFilterType");
+        GLES30.glUniform1i(mFilterHandler, mCurrentFilter);
+
+        mWhiteScaleHandler = GLES30.glGetUniformLocation(mGLProgram, "mWhiteScale");
+        GLES30.glUniform1f(mWhiteScaleHandler, mWhiteScale);
 
         float[] vertexArray = getPositionArray(mBgTexture.mVertexScaleX, mBgTexture.mVertexScaleY);
         mVertexHandler = GLES30.glGetAttribLocation(mGLProgram, "vertexPosition");
@@ -94,43 +102,36 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArray));
         GLES30.glEnableVertexAttribArray(mTextureHandler);
 
-        float[] scaleArray = {mWhiteScale};
-        mWhiteScaleHandler = GLES30.glGetAttribLocation(mGLProgram, "whiteScale");
-        GLES30.glVertexAttribPointer(mWhiteScaleHandler, 1, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(scaleArray));
-        GLES30.glEnableVertexAttribArray(mWhiteScaleHandler);
-
         short[] vertexIndex = {0, 1, 2, 0, 2, 3};
         GLES30.glActiveTexture(GLES30.GL_TEXTURE0);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mBgTexture.mTextureId);
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
 
         if(mDrawWater) {
-            // 解绑纹理
-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
-            GLES30.glDisableVertexAttribArray(mMatrixHandler);
-            GLES30.glDisableVertexAttribArray(mVertexHandler);
-            GLES30.glDisableVertexAttribArray(mTextureHandler);
-            GLES30.glDisableVertexAttribArray(mWhiteScaleHandler);
-            // 重新绑定纹理
-            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mWaterTexture.mTextureId);
-
-            GLES30.glEnableVertexAttribArray(mMatrixHandler);
-            GLES30.glEnableVertexAttribArray(mVertexHandler);
-            GLES30.glEnableVertexAttribArray(mTextureHandler);
-            GLES30.glEnableVertexAttribArray(mWhiteScaleHandler);
-
-            // 位置，水印为屏幕大小10分之一
-            float[] vertexArrayWater = getPositionArray(mWaterTexture.mVertexScaleX / 10, mWaterTexture.mVertexScaleY / 10);
-            GLES30.glVertexAttribPointer(mVertexHandler, 3, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(vertexArrayWater));
-            // 纹理坐标
-            float[] texArrayWater = {0, 0, 1f, 0, 1f, 1f, 0, 1f};
-            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArrayWater));
-            // 亮度
-            float[] scaleArrayWater = {0};
-            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(scaleArrayWater));
-
-            // 绘制水印纹理
-            GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
+//            // 解绑纹理
+//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+//            GLES30.glDisableVertexAttribArray(mMatrixHandler);
+//            GLES30.glDisableVertexAttribArray(mVertexHandler);
+//            GLES30.glDisableVertexAttribArray(mTextureHandler);
+//            // 重新绑定纹理
+//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mWaterTexture.mTextureId);
+//
+//            GLES30.glEnableVertexAttribArray(mMatrixHandler);
+//            GLES30.glEnableVertexAttribArray(mVertexHandler);
+//            GLES30.glEnableVertexAttribArray(mTextureHandler);
+//
+//            // 位置，水印为屏幕大小10分之一
+//            float[] vertexArrayWater = getPositionArray(mWaterTexture.mVertexScaleX / 10, mWaterTexture.mVertexScaleY / 10);
+//            GLES30.glVertexAttribPointer(mVertexHandler, 3, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(vertexArrayWater));
+//            // 纹理坐标
+//            float[] texArrayWater = {0, 0, 1f, 0, 1f, 1f, 0, 1f};
+//            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArrayWater));
+//            // 亮度
+//            float[] scaleArrayWater = {0};
+//            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(scaleArrayWater));
+//
+//            // 绘制水印纹理
+//            GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
         }
 
         if (mIsSaveImage) {
@@ -140,7 +141,6 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glDisableVertexAttribArray(mMatrixHandler);
         GLES30.glDisableVertexAttribArray(mVertexHandler);
         GLES30.glDisableVertexAttribArray(mTextureHandler);
-        GLES30.glDisableVertexAttribArray(mWhiteScaleHandler);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
 
     }
@@ -190,6 +190,10 @@ public class DeformCanvasDrawable extends BaseDrawable {
 
     public void setDrawWater(boolean drawWater) {
         mDrawWater = drawWater;
+    }
+
+    public void setCurrentFilter(int currentFilter) {
+        mCurrentFilter = currentFilter;
     }
 
     /**

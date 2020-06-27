@@ -5,12 +5,11 @@ import android.widget.ImageView;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
-import com.cxh.androidmedia.jni.OpenGLHelper;
 import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.BaseGlRender;
 import com.cxh.androidmedia.render.shapes.CubeDrawable;
 import com.cxh.androidmedia.render.shapes.EarthDrawable;
-import com.cxh.androidmedia.render.shapes.FilterGrayDrawable;
+import com.cxh.androidmedia.render.filters.FilterGrayDrawable;
 import com.cxh.androidmedia.render.shapes.ImageDrawable;
 import com.cxh.androidmedia.render.shapes.PointDrawable;
 import com.cxh.androidmedia.render.shapes.RectDrawable;
@@ -69,7 +68,6 @@ public class GLRender1Activity extends BaseActivity {
         mTabLayout.addTab(mTabLayout.newTab().setText("圆形"));
         mTabLayout.addTab(mTabLayout.newTab().setText("正方体"));
         mTabLayout.addTab(mTabLayout.newTab().setText("图片"));
-        mTabLayout.addTab(mTabLayout.newTab().setText("黑白滤镜"));
         mTabLayout.addTab(mTabLayout.newTab().setText("地球仪"));
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -124,7 +122,6 @@ public class GLRender1Activity extends BaseActivity {
             shapes.add(new RoundDrawable());
             shapes.add(new CubeDrawable());
             shapes.add(new ImageDrawable());
-            shapes.add(new FilterGrayDrawable());
             shapes.add(new EarthDrawable());
         }
 

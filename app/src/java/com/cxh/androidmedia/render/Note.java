@@ -58,8 +58,48 @@ public class Note {
      *  gl_FragData：vec4类型的数组。向其写入的信息，供渲染管线的后继过程使用。
      *
      *  4、常见内置函数
-     *      常见函数，几何函数，矩阵函数，纹理相关函数（太多了不一一例举）
+     *  常见函数：，几何函数，矩阵函数，纹理相关函数（常用）
+     *  radians(x)：角度转弧度
+     *  degrees(x)：弧度转角度
+     *  sin(x)：正弦函数，传入值为弧度。相同的还有cos余弦函数、tan正切函数、asin反正弦、acos反余弦、atan反正切
+     *  pow(x,y)：xy
+     *  exp(x)：ex
+     *  exp2(x)：2x
+     *  log(x)：logex
+     *  log2(x)：log2x
+     *  sqrt(x)：x√
+     *  inversesqr(x)：1x√
+     *  abs(x)：取x的绝对值
+     *  sign(x)：x>0返回1.0，x<0返回-1.0，否则返回0.0
+     *  ceil(x)：返回大于或者等于x的整数
+     *  floor(x)：返回小于或者等于x的整数
+     *  fract(x)：返回x-floor(x)的值
+     *  mod(x,y)：取模（求余）
+     *  min(x,y)：获取xy中小的那个
+     *  max(x,y)：获取xy中大的那个
+     *  mix(x,y,a)：返回x∗(1−a)+y∗a
+     *  step(x,a)：x< a返回0.0，否则返回1.0
+     *  smoothstep(x,y,a)：a < x返回0.0，a>y返回1.0，否则返回0.0-1.0之间平滑的Hermite插值。
+     *  dFdx(p)：p在x方向上的偏导数
+     *  dFdy(p)：p在y方向上的偏导数
      *
+     *  几何函数：
+     *  length(x)：计算向量x的长度
+     *  distance(x,y)：返回向量xy之间的距离
+     *  dot(x,y)：返回向量xy的点积
+     *  cross(x,y)：返回向量xy的差积
+     *  normalize(x)：返回与x向量方向相同，长度为1的向量
+     *
+     *  矩阵函数：
+     *  matrixCompMult(x,y)：将矩阵相乘
+     *  lessThan(x,y)：返回向量xy的各个分量执行x< y的结果，类似的有greaterThan,equal,notEqual
+     *  lessThanEqual(x,y)：返回向量xy的各个分量执行x<= y的结果，类似的有类似的有greaterThanEqual
+     *  any(bvec x)：x有一个元素为true，则为true
+     *  all(bvec x)：x所有元素为true，则返回true，否则返回false
+     *
+     *  纹理采样相关函数：
+     *  texture2D、texture2DProj、texture2DLod、texture2DProjLod、textureCube、textureCubeLod及texture3D、
+     *  texture3DProj、texture3DLod、texture3DProjLod等等
      *
      */
 

@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity {
         List<Object> beans = new ArrayList<>();
         beans.add(new ActivityBean("多种图片显示方式", ShowImageActivity.class));
         beans.add(new ActivityBean("OpenGL ES基础绘制", GLRender1Activity.class));
-        beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印", GLRender2Activity.class));
+        beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印、滤镜", GLRender2Activity.class));
         beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO高级特性", GLRender3Activity.class));
         beans.add(new ActivityBean("OpenGL ES、OpenCV实现高级美颜", GLRender3Activity.class));
         beans.add(new ActivityBean("使用GLSurfaceView预览Camera", GLRender5Activity.class));
@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity {
         beans.add(new ActivityBean("音视频采集、编码、封装Mp4文件", MediaCodec3Activity.class));
         beans.add(new ActivityBean("Mp4文件解析、解码、播放、渲染", MediaCodec4Activity.class));
         beans.add(new ActivityBean("网络协议rtmp、封包格式FLV、MP4等", MediaProtocolActivity.class));
-        beans.add(new ActivityBean("深入学习开源项目ijkplayer", MediaIjkPlayerActivity.class));
+        beans.add(new ActivityBean("学习开源项目ijkplayer", MediaIjkPlayerActivity.class));
         beans.add(new ActivityBean("移植ffmpeg，实现简易播放器", MediaFFmpegActivity.class));
         beans.add(new ActivityBean("移植x264，实现H264软编码", MediaX264Activity.class));
         beans.add(new ActivityBean("移植librtmp，实现rtmp推流功能", MediaLibrtmpActivity.class));

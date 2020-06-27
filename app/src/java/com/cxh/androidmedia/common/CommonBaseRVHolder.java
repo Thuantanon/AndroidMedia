@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -93,6 +96,10 @@ public class CommonBaseRVHolder<T> extends RecyclerView.ViewHolder {
 
     public void loadImage(@IdRes int id, String url) {
         loadImage(id, url, 0);
+    }
+
+    public @ColorInt int getColor(@ColorRes int colorRes){
+        return ContextCompat.getColor(mContext, colorRes);
     }
 
 

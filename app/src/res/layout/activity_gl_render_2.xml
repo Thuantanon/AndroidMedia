@@ -55,8 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
-                android:text="美白(0)"
-                android:gravity="center"
+                android:text="亮度(0)"
+                android:gravity="start"
                 android:minWidth="70dp"
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
                 android:text="缩放(0)"
-                android:gravity="center"
+                android:gravity="start"
                 android:minWidth="70dp"
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
                 android:text="旋转(0)"
-                android:gravity="center"
+                android:gravity="start"
                 android:minWidth="70dp"
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"
@@ -128,13 +128,21 @@
 
         </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_filter_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            />
+
         <com.cxh.androidmedia.view.FlowLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="12dp"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="12dp"
             android:orientation="horizontal">
 

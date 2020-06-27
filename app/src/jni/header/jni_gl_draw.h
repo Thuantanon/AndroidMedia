@@ -32,4 +32,5 @@ Java_com_cxh_androidmedia_jni_OpenGLHelper_glRelease(JNIEnv *env, jclass instanc
 }
 
 
+
 #endif //ANDROIDMEDIA_JNI_GL_DRAW_H

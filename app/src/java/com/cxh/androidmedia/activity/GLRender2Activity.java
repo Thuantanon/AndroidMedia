@@ -14,12 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.cxh.androidmedia.R;
+import com.cxh.androidmedia.adapter.FilterListRvAdapter;
 import com.cxh.androidmedia.base.BaseActivity;
-import com.cxh.androidmedia.jni.OpenGLHelper;
+import com.cxh.androidmedia.common.CommonBaseRVHolder;
+import com.cxh.androidmedia.common.CommonBaseRvAdapter;
 import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.ClassicDrawRender;
 import com.cxh.androidmedia.render.IDrawableProvider;
+import com.cxh.androidmedia.render.bean.FilterBean;
 import com.cxh.androidmedia.render.beauty.DeformCanvasDrawable;
 import com.cxh.androidmedia.utils.DimenUtil;
 import com.cxh.androidmedia.utils.FileUtil;
@@ -27,6 +33,8 @@ import com.cxh.androidmedia.utils.ToastUtil;
 import com.cxh.androidmedia.view.ShotcutFrameLayout;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -64,10 +72,13 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
     CheckedTextView mCtvShotcut;
     @BindView(R.id.fl_shotcut)
     ShotcutFrameLayout mFlShotcut;
+    @BindView(R.id.rv_filter_list)
+    RecyclerView mRvFilterList;
 
 
     private ClassicDrawRender mDrawRender;
     private DeformCanvasDrawable mDeformDrawable;
+    private FilterListRvAdapter mAdapter;
 
     @Override
     protected int getLayoutRes() {
@@ -90,6 +101,24 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
         mSBScale.setOnSeekBarChangeListener(this);
         mSBRotate.setOnSeekBarChangeListener(this);
 
+        mAdapter = new FilterListRvAdapter(mContext);
+        mRvFilterList.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+        mRvFilterList.setAdapter(mAdapter);
+        mAdapter.setOnItemClickListener(new CommonBaseRvAdapter.OnItemClickListener<FilterBean>() {
+            @Override
+            public void onItemClick(CommonBaseRVHolder holder, FilterBean data, int position) {
+                mAdapter.setCurrentFilter(data.getFilterId());
+                mDeformDrawable.setCurrentFilter(data.getFilterId());
+                mSurfaceView.requestRender();
+            }
+        });
+
+        List<FilterBean> mFilters = new ArrayList<>();
+        mFilters.add(new FilterBean(0, "默认"));
+        mFilters.add(new FilterBean(1, "黑白"));
+        mFilters.add(new FilterBean(2, "曝光1"));
+        mFilters.add(new FilterBean(3, "曝光2"));
+        mAdapter.setList(mFilters);
     }
 
     @Override

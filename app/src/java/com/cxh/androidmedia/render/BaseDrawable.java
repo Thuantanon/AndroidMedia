@@ -18,10 +18,10 @@ public abstract class BaseDrawable {
         return shader;
     }
 
-    protected void printLog(int glTextureId) {
+    protected void printLog(int glProgramId) {
         // 获取错误信息
         int[] status = new int[1];
-        GLES30.glGetProgramiv(glTextureId, GLES30.GL_VALIDATE_STATUS, status, 0);
+        GLES30.glGetProgramiv(glProgramId, GLES30.GL_VALIDATE_STATUS, status, 0);
     }
 
     public abstract void draw(float[] matrix, int width, int height);
