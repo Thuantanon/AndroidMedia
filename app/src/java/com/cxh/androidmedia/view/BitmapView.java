@@ -2,6 +2,7 @@ package com.cxh.androidmedia.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -36,6 +37,14 @@ public class BitmapView extends View {
             setBackground(mDrawable);
         }
         ta.recycle();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        // 绘制Bitmap
+        // canvas.drawBitmap(....);
     }
 
 }

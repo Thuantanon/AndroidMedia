@@ -2,8 +2,11 @@ package com.cxh.androidmedia.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+
+import com.cxh.androidmedia.base.AMApp;
 
 import java.io.Closeable;
 import java.io.File;
@@ -22,8 +25,7 @@ import java.util.Locale;
  */
 public class FileUtil {
 
-    private static final String ROOT_NAME = "AndMedia";
-    private static final String ROOT_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + ROOT_NAME;
+    private static final String ROOT_PATH = getRootPath();
 
     public static final String PATH_AUDIO = ROOT_PATH + File.separator + "audio";
     public static final String PATH_VIDEO = ROOT_PATH + File.separator + "video";
@@ -34,26 +36,43 @@ public class FileUtil {
         File fileRoot = new File(ROOT_PATH);
         if (!fileRoot.exists() || !fileRoot.isDirectory()) {
             boolean result = fileRoot.mkdirs();
-            CCLog.i("init root dir : " + result);
+            CCLog.i(String.format("init dir %s result = " + result, fileRoot.getAbsoluteFile()));
         }
 
         File audioDir = new File(PATH_AUDIO);
         if (!audioDir.exists() || !audioDir.isDirectory()) {
-            boolean result = audioDir.mkdir();
-            CCLog.i("init audio dir : " + result);
+            boolean result = audioDir.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, audioDir.getAbsoluteFile()));
         }
 
         File videoDir = new File(PATH_VIDEO);
         if (!videoDir.exists() || !videoDir.isDirectory()) {
-            boolean result = videoDir.mkdir();
-            CCLog.i("init video dir : " + result);
+            boolean result = videoDir.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, videoDir.getAbsoluteFile()));
         }
 
         File imageDir = new File(PATH_IMAGE);
         if (!imageDir.exists() || !imageDir.isDirectory()) {
-            boolean result = imageDir.mkdir();
-            CCLog.i("init image dir : " + result);
+            boolean result = imageDir.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, imageDir.getAbsoluteFile()));
         }
+    }
+
+    public static String getRootPath() {
+        String rootDir = null;
+        // Android Q新模式
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
+            File rootFile = AMApp.get().getExternalFilesDir("");
+            // 去不到就用内存
+            if(null != rootFile){
+                rootDir = rootFile.getAbsolutePath();
+            }else {
+                rootDir = AMApp.get().getFilesDir().getAbsolutePath();
+            }
+        } else {
+            rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        return rootDir;
     }
 
     public static String getRandomPCMFile() {

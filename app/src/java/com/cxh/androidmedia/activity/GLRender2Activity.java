@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.opengl.GLSurfaceView;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckedTextView;
 import android.widget.FrameLayout;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,7 +104,7 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
         mSBRotate.setOnSeekBarChangeListener(this);
 
         mAdapter = new FilterListRvAdapter(mContext);
-        mRvFilterList.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
+        mRvFilterList.setLayoutManager(new GridLayoutManager(mContext, 5));
         mRvFilterList.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new CommonBaseRvAdapter.OnItemClickListener<FilterBean>() {
             @Override
@@ -116,8 +118,12 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
         List<FilterBean> mFilters = new ArrayList<>();
         mFilters.add(new FilterBean(0, "默认"));
         mFilters.add(new FilterBean(1, "黑白"));
-        mFilters.add(new FilterBean(2, "曝光1"));
-        mFilters.add(new FilterBean(3, "曝光2"));
+        mFilters.add(new FilterBean(2, "暖男"));
+        mFilters.add(new FilterBean(3, "高冷"));
+        mFilters.add(new FilterBean(4, "反转"));
+        mFilters.add(new FilterBean(5, "反转2"));
+        mFilters.add(new FilterBean(6, "马赛克"));
+        mFilters.add(new FilterBean(7, "马赛克2"));
         mAdapter.setList(mFilters);
     }
 
@@ -189,7 +195,7 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
     private void setPannelHidden(boolean hide) {
         int bottomMargin = 0;
         if (hide) {
-            bottomMargin = 0 - mLlOperatorPanel.getMeasuredHeight() * 2 / 3;
+            bottomMargin = mIvCheckUpdown.getMeasuredHeight() - mLlOperatorPanel.getMeasuredHeight();
         }
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mLlOperatorPanel.getLayoutParams();
         layoutParams.bottomMargin = bottomMargin;

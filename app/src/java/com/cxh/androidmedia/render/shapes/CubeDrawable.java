@@ -180,7 +180,7 @@ public class CubeDrawable extends BaseDrawable {
     };
 
     private int mVertexCount = rectVertex.length / COORDS_PER_VERTEX;
-    private int mGLTextureID;
+    private int mGLProgramID;
     private int mPositionHandler;
     private int mColorHandler;
     private int mMatrixHandler;
@@ -193,50 +193,50 @@ public class CubeDrawable extends BaseDrawable {
         int fsh = loadShader(GLES30.GL_FRAGMENT_SHADER, FRAGMENT_SHADER);
 
         // 创建空的OpenGL ES程序
-        mGLTextureID = GLES30.glCreateProgram();
+        mGLProgramID = GLES30.glCreateProgram();
         // 添加顶点着色器到程序中
-        GLES30.glAttachShader(mGLTextureID, vsh);
+        GLES30.glAttachShader(mGLProgramID, vsh);
         // 添加片段着色器到程序中
-        GLES30.glAttachShader(mGLTextureID, fsh);
+        GLES30.glAttachShader(mGLProgramID, fsh);
         // 创建OpenGL ES程序可执行文件
-        GLES30.glLinkProgram(mGLTextureID);
+        GLES30.glLinkProgram(mGLProgramID);
         // 使程序生效
-        GLES30.glValidateProgram(mGLTextureID);
+        GLES30.glValidateProgram(mGLProgramID);
 
         // 删除着色器指针
         GLES30.glDeleteShader(vsh);
         GLES30.glDeleteShader(fsh);
 
-        printLog(mGLTextureID);
+        printLog(mGLProgramID);
     }
 
     @Override
     public void draw(float[] matrix, int width, int height) {
 
         // 将程序添加到OpenGL ES环境
-        GLES30.glUseProgram(mGLTextureID);
+        GLES30.glUseProgram(mGLProgramID);
 
         // 设置变换矩阵
-        mMatrixHandler = GLES30.glGetUniformLocation(mGLTextureID, "u_Matrix");
+        mMatrixHandler = GLES30.glGetUniformLocation(mGLProgramID, "u_Matrix");
         float[] combineMatrix = move(matrix, width, height);
         GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, combineMatrix, 0);
 
         // 获取顶点着色器的句柄
-        mPositionHandler = GLES30.glGetAttribLocation(mGLTextureID, "vPosition");
+        mPositionHandler = GLES30.glGetAttribLocation(mGLProgramID, "vPosition");
         // 设置三角形坐标数据
         GLES30.glVertexAttribPointer(mPositionHandler, COORDS_PER_VERTEX, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(rectVertex));
         // 启用顶点着色器句柄
         GLES30.glEnableVertexAttribArray(mPositionHandler);
 
         // 获取片源着色器的color句柄
-        mColorHandler = GLES30.glGetAttribLocation(mGLTextureID, "aColor");
+        mColorHandler = GLES30.glGetAttribLocation(mGLProgramID, "aColor");
         // 上色
         GLES30.glVertexAttribPointer(mColorHandler, 4, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(rectColor));
         // 启用
         GLES30.glEnableVertexAttribArray(mColorHandler);
 
         // 获取颜色句柄
-        // mColorHandler = GLES30.glGetUniformLocation(mGLTextureID, "vColor");
+        // mColorHandler = GLES30.glGetUniformLocation(mGLProgramID, "vColor");
         // 设置绘制三角形的颜色
         // GLES30.glUniform4fv(mColorHandler, 1, rectColor, 0);
         // 绘制三角形

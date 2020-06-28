@@ -38,8 +38,6 @@ public class DeformCanvasDrawable extends BaseDrawable {
     private int mMatrixHandler;
     private int mVertexHandler;
     private int mTextureHandler;
-    private int mWhiteScaleHandler;
-    private int mFilterHandler;
 
     private int mCurrentAngle;
     private int mCurrentFilter;
@@ -86,11 +84,10 @@ public class DeformCanvasDrawable extends BaseDrawable {
         float[] combineMatrix = setRotateM(matrix, mCurrentAngle);
         GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, combineMatrix, 0);
 
-        mFilterHandler = GLES30.glGetUniformLocation(mGLProgram, "mFilterType");
-        GLES30.glUniform1i(mFilterHandler, mCurrentFilter);
-
-        mWhiteScaleHandler = GLES30.glGetUniformLocation(mGLProgram, "mWhiteScale");
-        GLES30.glUniform1f(mWhiteScaleHandler, mWhiteScale);
+        OpenGLUtils.setUnifrom1i(mGLProgram, "mFilterType", mCurrentFilter);
+        OpenGLUtils.setUnifrom1f(mGLProgram, "mWhiteScale", mWhiteScale);
+        OpenGLUtils.setUnifrom1f(mGLProgram, "mTexWidth", mBgTexture.mBitmapWidth);
+        OpenGLUtils.setUnifrom1f(mGLProgram, "mTexHeight", mBgTexture.mBitmapHeight);
 
         float[] vertexArray = getPositionArray(mBgTexture.mVertexScaleX, mBgTexture.mVertexScaleY);
         mVertexHandler = GLES30.glGetAttribLocation(mGLProgram, "vertexPosition");

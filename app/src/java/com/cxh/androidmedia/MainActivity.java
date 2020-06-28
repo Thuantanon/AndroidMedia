@@ -9,6 +9,7 @@ import com.cxh.androidmedia.activity.AudioRecordActivity;
 import com.cxh.androidmedia.activity.GLRender1Activity;
 import com.cxh.androidmedia.activity.GLRender2Activity;
 import com.cxh.androidmedia.activity.GLRender3Activity;
+import com.cxh.androidmedia.activity.GLRender4Activity;
 import com.cxh.androidmedia.activity.GLRender5Activity;
 import com.cxh.androidmedia.activity.MediaCodec1Activity;
 import com.cxh.androidmedia.activity.MediaCodec2Activity;
@@ -59,11 +60,11 @@ public class MainActivity extends BaseActivity {
         beans.add(new ActivityBean("多种图片显示方式", ShowImageActivity.class));
         beans.add(new ActivityBean("OpenGL ES基础绘制", GLRender1Activity.class));
         beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印、滤镜", GLRender2Activity.class));
-        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO高级特性", GLRender3Activity.class));
         beans.add(new ActivityBean("OpenGL ES、OpenCV实现高级美颜", GLRender3Activity.class));
-        beans.add(new ActivityBean("使用GLSurfaceView预览Camera", GLRender5Activity.class));
+        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO高级特性", GLRender4Activity.class));
         beans.add(new ActivityBean("音频录制，播放，wav读写", AudioRecordActivity.class));
         beans.add(new ActivityBean("视频预览，获取NV21数据", VideoRecorderActivity.class));
+        beans.add(new ActivityBean("使用SurfaceView预览Camera", GLRender5Activity.class));
         beans.add(new ActivityBean("MediaCodec解析、封装Mp4文件", MediaCodec1Activity.class));
         beans.add(new ActivityBean("MediaCodec硬编、硬解AAC和H264", MediaCodec2Activity.class));
         beans.add(new ActivityBean("音视频采集、编码、封装Mp4文件", MediaCodec3Activity.class));
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity {
         beans.add(new ActivityBean("移植x264，实现H264软编码", MediaX264Activity.class));
         beans.add(new ActivityBean("移植librtmp，实现rtmp推流功能", MediaLibrtmpActivity.class));
         beans.add(new ActivityBean("做一款短视频APP，仿抖音", MediaMainActivity.class));
+
         mRvAdapter.setList(beans);
 
         requestPermission();

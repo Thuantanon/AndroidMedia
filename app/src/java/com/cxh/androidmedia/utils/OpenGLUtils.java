@@ -17,12 +17,12 @@ import com.cxh.androidmedia.render.bean.BitmapTexture;
  */
 public class OpenGLUtils {
 
-    public static BitmapTexture loadTexture(Context context, @DrawableRes int drawable){
+    public static BitmapTexture loadTexture(Context context, @DrawableRes int drawable) {
         final int[] texture = new int[1];
         BitmapTexture bitmapTexture = new BitmapTexture();
         //创建一个纹理对象
         GLES30.glGenTextures(1, texture, 0);
-        if(texture[0] <= 0){
+        if (texture[0] <= 0) {
             CCLog.i("load texture failed...");
             return bitmapTexture;
         }
@@ -30,7 +30,7 @@ public class OpenGLUtils {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable, options);
-        if(null == bitmap){
+        if (null == bitmap) {
             CCLog.i("decode bitmap failed...");
             return bitmapTexture;
         }
@@ -55,4 +55,13 @@ public class OpenGLUtils {
         return bitmapTexture;
     }
 
+    public static void setUnifrom1i(int programId, String name, int value) {
+        int location = GLES30.glGetUniformLocation(programId, name);
+        GLES30.glUniform1i(location, value);
+    }
+
+    public static void setUnifrom1f(int programId, String name, float value) {
+        int location = GLES30.glGetUniformLocation(programId, name);
+        GLES30.glUniform1f(location, value);
+    }
 }

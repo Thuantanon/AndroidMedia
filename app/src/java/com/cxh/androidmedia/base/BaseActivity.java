@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.TypedValue;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.cxh.androidmedia.R;
 
 import java.lang.ref.WeakReference;
 
@@ -40,13 +37,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getIntentExtra(getIntent());
         mContext = this;
         mHander = new MyHander(this);
-        setContentView(getLayoutRes());
-        getIntentExtra(getIntent());
-        mUnbinder = ButterKnife.bind(this);
+        int layout = getLayoutRes();
+        if (layout > 0) {
+            setContentView(getLayoutRes());
+            mUnbinder = ButterKnife.bind(this);
+        }
         init();
-
         initActionBar();
     }
 
@@ -62,7 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             BaseActivity activity = mActivityRef.get();
-            if(null == activity){
+            if (null == activity) {
                 return;
             }
 
@@ -74,7 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Intent inte = getIntent();
-        if(null != inte){
+        if (null != inte) {
             getIntentExtra(inte);
         }
     }
@@ -82,10 +81,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(null != mUnbinder){
+        if (null != mUnbinder) {
             mUnbinder.unbind();
         }
-        if(null != mHander){
+        if (null != mHander) {
             mHander.removeCallbacksAndMessages(null);
             mHander = null;
         }
@@ -93,37 +92,38 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    protected abstract @LayoutRes int getLayoutRes();
+    protected abstract @LayoutRes
+    int getLayoutRes();
 
     protected abstract void init();
 
-    public void getIntentExtra(Intent intent){
+    public void getIntentExtra(Intent intent) {
         String title = getIntent().getStringExtra("title");
         setTitle(title);
     }
 
 
-    public void onViewClick(View view){
+    public void onViewClick(View view) {
 
     }
 
-    public Handler getHandler(){
+    public Handler getHandler() {
         return mHander;
     }
 
-    protected void handleMessage(Message message){
+    protected void handleMessage(Message message) {
 
     }
 
-    protected void initActionBar(){
+    protected void initActionBar() {
         ActionBar mActionBar = getSupportActionBar();
-        if(null != mActionBar){
+        if (null != mActionBar) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -157,7 +157,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setLightStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = getWindow();
-            if(null != window) {
+            if (null != window) {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
