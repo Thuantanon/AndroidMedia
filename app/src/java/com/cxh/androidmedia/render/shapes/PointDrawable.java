@@ -51,4 +51,9 @@ public class PointDrawable extends BaseDrawable {
         GLES30.glUseProgram(mGLProgramID);
         GLES30.glDrawArrays(GLES30.GL_POINTS, 0, 1);
     }
+
+    @Override
+    public void release() {
+        super.release();
+    }
 }

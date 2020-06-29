@@ -64,8 +64,7 @@ vec4 filterColor(vec4 color)
     }
     else if(6 == mFilterType)
     {
-        // 马赛克
-        // 计算真实坐标，取方格中央颜色
+        // 方形马赛克
         float x = floor(mTexWidth * mTexCoord.x / mosaicSize) * mosaicSize + mosaicSize / 2.0f;
         float y = floor(mTexHeight * mTexCoord.y / mosaicSize) * mosaicSize + mosaicSize / 2.0f;
         x = x / mTexWidth;
@@ -74,8 +73,7 @@ vec4 filterColor(vec4 color)
     }
     else if(7 == mFilterType)
     {
-        // 马赛克
-        // 计算真实坐标，取方格中央颜色
+        // 圆形马赛克
         float realX = mTexWidth * mTexCoord.x;
         float realY = mTexHeight * mTexCoord.y;
         float centerX = floor(realX / mosaicSize) * mosaicSize + mosaicSize / 2.0f;

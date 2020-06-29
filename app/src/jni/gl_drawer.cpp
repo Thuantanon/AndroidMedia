@@ -1,5 +1,5 @@
 //
-// Created by 蔡锡华 on 2020-06-20.
+// Created by 蔡锡华 on 2019-06-20.
 //
 
 #include "header/gl_drawer.h"
@@ -18,6 +18,9 @@ GlDrawer::~GlDrawer() {
 }
 
 void GlDrawer::glInit(JNIEnv *jniEnv, jobject assetsManger) {
+
+    char * const * vshShader = nullptr;
+    char * const * fshShader = nullptr;
 
     const char *vertexShaderPath = "glsl/render2/render_vertex_image.glsl";
     const char *fragmentShaderPath = "glsl/render2/render_fragment_image.glsl";

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.Matrix;
 import android.os.Handler;
@@ -67,7 +68,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glDeleteShader(fragShader);
 
         mBgTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty5);
-        mWaterTexture = OpenGLUtils.loadTexture(AMApp.get(), R.mipmap.ic_launcher);
+        mWaterTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.watermartk);
     }
 
     public DeformCanvasDrawable() {
@@ -78,6 +79,10 @@ public class DeformCanvasDrawable extends BaseDrawable {
     public void draw(float[] matrix, int width, int height) {
         mBgTexture.calculateScale(width, height);
         mWaterTexture.calculateScale(width, height);
+
+        //启用透明
+        GLES20.glEnable(GLES20.GL_BLEND);
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
         GLES30.glUseProgram(mGLProgram);
         mMatrixHandler = GLES30.glGetUniformLocation(mGLProgram, "uMatrix");
@@ -105,30 +110,24 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
 
         if(mDrawWater) {
-//            // 解绑纹理
-//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
-//            GLES30.glDisableVertexAttribArray(mMatrixHandler);
-//            GLES30.glDisableVertexAttribArray(mVertexHandler);
-//            GLES30.glDisableVertexAttribArray(mTextureHandler);
-//            // 重新绑定纹理
-//            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mWaterTexture.mTextureId);
-//
-//            GLES30.glEnableVertexAttribArray(mMatrixHandler);
-//            GLES30.glEnableVertexAttribArray(mVertexHandler);
-//            GLES30.glEnableVertexAttribArray(mTextureHandler);
-//
-//            // 位置，水印为屏幕大小10分之一
-//            float[] vertexArrayWater = getPositionArray(mWaterTexture.mVertexScaleX / 10, mWaterTexture.mVertexScaleY / 10);
-//            GLES30.glVertexAttribPointer(mVertexHandler, 3, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(vertexArrayWater));
-//            // 纹理坐标
-//            float[] texArrayWater = {0, 0, 1f, 0, 1f, 1f, 0, 1f};
-//            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArrayWater));
-//            // 亮度
-//            float[] scaleArrayWater = {0};
-//            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(scaleArrayWater));
-//
-//            // 绘制水印纹理
-//            GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
+            // 解绑纹理
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+            OpenGLUtils.setUnifrom1i(mGLProgram, "mFilterType", 0);
+            OpenGLUtils.setUnifrom1f(mGLProgram, "mWhiteScale", 0);
+            OpenGLUtils.setUnifrom1f(mGLProgram, "mTexWidth", mWaterTexture.mBitmapWidth);
+            OpenGLUtils.setUnifrom1f(mGLProgram, "mTexHeight", mWaterTexture.mBitmapHeight);
+
+            // 位置，水印为屏幕大小10分之一
+            float[] vertexArrayWater = getWaterPositionArray(mWaterTexture.mVertexScaleX / 4, mWaterTexture.mVertexScaleY / 4);
+            GLES30.glVertexAttribPointer(mVertexHandler, 3, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(vertexArrayWater));
+            // 纹理坐标
+            float[] texArrayWater = {0, 0, 1f, 0, 1f, 1f, 0, 1f};
+            GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArrayWater));
+
+            // 重新绑定纹理，水印纹理
+            short[] vertexIndexWater = {0, 1, 2, 0, 2, 3};
+            GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mWaterTexture.mTextureId);
+            GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndexWater));
         }
 
         if (mIsSaveImage) {
@@ -152,6 +151,21 @@ public class DeformCanvasDrawable extends BaseDrawable {
                 x, y, 0,
                 x, -y, 0,
                 -x, -y, 0
+        };
+    }
+
+    private float[] getWaterPositionArray(float x, float y){
+        // 水印在图片的右下角
+        float sizeScale = Math.min(1.0f - mSizeScale, 1.0f);
+        float left = (mBgTexture.mVertexScaleX - x * 1.5f) * sizeScale;
+        float right = (mBgTexture.mVertexScaleX - x * 0.5f) * sizeScale;
+        float top = (mBgTexture.mVertexScaleY - y * 1.5f) * sizeScale;
+        float bottom = (mBgTexture.mVertexScaleY - y * 0.5f) * sizeScale;
+        return new float[]{
+                left, top, 0.1f,
+                right, top, 0.1f,
+                right, bottom, 0.1f,
+                left, bottom, 0.1f
         };
     }
 

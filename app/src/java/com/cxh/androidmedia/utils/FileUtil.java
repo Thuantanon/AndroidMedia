@@ -164,16 +164,18 @@ public class FileUtil {
         }
     }
 
-    public static void saveBitmapToStorage(Bitmap bitmap, String path) {
+    public static boolean saveBitmapToStorage(Bitmap bitmap, String path) {
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(path);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             CCLog.i("图像已写入到：" + path);
+            return true;
         } catch (Exception e) {
             CCLog.i("写入失败：" + e.toString());
         } finally {
             tryClose(outputStream);
         }
+        return false;
     }
 }

@@ -274,6 +274,8 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
                         sb.append(".jpg");
 
                         FileUtil.saveBitmapToStorage(bitmap, sb.toString());
+                        sb.insert(0, "图片已保存至：");
+                        ToastUtil.show(mContext, sb.toString());
                     }
                 })
                 .setCancelable(true)
