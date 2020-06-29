@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.opengl.GLES20;
 import android.opengl.GLES30;
 import android.opengl.Matrix;
 import android.os.Handler;
@@ -80,15 +79,13 @@ public class DeformCanvasDrawable extends BaseDrawable {
         mBgTexture.calculateScale(width, height);
         mWaterTexture.calculateScale(width, height);
 
-        //启用透明
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
+        // 变换矩阵
         GLES30.glUseProgram(mGLProgram);
         mMatrixHandler = GLES30.glGetUniformLocation(mGLProgram, "uMatrix");
         float[] combineMatrix = setRotateM(matrix, mCurrentAngle);
         GLES30.glUniformMatrix4fv(mMatrixHandler, 1, false, combineMatrix, 0);
 
+        // 常量
         OpenGLUtils.setUnifrom1i(mGLProgram, "mFilterType", mCurrentFilter);
         OpenGLUtils.setUnifrom1f(mGLProgram, "mWhiteScale", mWhiteScale);
         OpenGLUtils.setUnifrom1f(mGLProgram, "mTexWidth", mBgTexture.mBitmapWidth);
@@ -125,7 +122,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
             GLES30.glVertexAttribPointer(mTextureHandler, 2, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(texArrayWater));
 
             // 重新绑定纹理，水印纹理
-            short[] vertexIndexWater = {0, 1, 2, 0, 2, 3};
+            short[] vertexIndexWater = {0, 1, 2, 2, 3, 0};
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mWaterTexture.mTextureId);
             GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndexWater));
         }
@@ -159,8 +156,8 @@ public class DeformCanvasDrawable extends BaseDrawable {
         float sizeScale = Math.min(1.0f - mSizeScale, 1.0f);
         float left = (mBgTexture.mVertexScaleX - x * 1.5f) * sizeScale;
         float right = (mBgTexture.mVertexScaleX - x * 0.5f) * sizeScale;
-        float top = (mBgTexture.mVertexScaleY - y * 1.5f) * sizeScale;
-        float bottom = (mBgTexture.mVertexScaleY - y * 0.5f) * sizeScale;
+        float top = (mBgTexture.mVertexScaleY - y * 0.5f) * sizeScale;
+        float bottom = (mBgTexture.mVertexScaleY - y * 1.5f) * sizeScale;
         return new float[]{
                 left, top, 0.1f,
                 right, top, 0.1f,

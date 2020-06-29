@@ -7,6 +7,65 @@ uniform float mWhiteScale;
 varying vec2 mTexCoord;
 
 const float mosaicSize = 20.0f;
+const float gaussBlurRadius = 5.0f;
+const int moduleCount = 3;
+
+vec4 strongColor(vec4 color)
+{
+    float scale = 1.1f;
+    if(color.r > color.g && color.r > color.b)
+    {
+        color.r = clamp(color.r * scale, 0.0, 1.0);
+    }
+    else if(color.g > color.r && color.g > color.b)
+    {
+        color.g = clamp(color.g * scale, 0.0, 1.0);
+    }
+    else if(color.b > color.r && color.b > color.g)
+    {
+        color.b = clamp(color.b * scale, 0.0, 1.0);
+    }
+    return color;
+}
+
+vec4 gaussBlur(vec4 color)
+{
+    // 高斯模糊，求一定区域颜色平均值
+    float realX = mTexWidth * mTexCoord.x;
+    float realY = mTexHeight * mTexCoord.y;
+    float colorCount = 0.0f;
+    float tR,tG,tB;
+    for(float i = 0.0f; i < gaussBlurRadius; i += 0.5f)
+    {
+        for(float j = 0.0f; j < gaussBlurRadius; j += 0.5f)
+        {
+            float x,y;
+            vec4 c;
+            x = realX - i;
+            y = realY - j;
+            x = x > 0.0 ? x : 0.0;
+            y = y > 0.0 ? y : 0.0;
+            c = texture2D(mTextureUnit, vec2(x / mTexWidth, y / mTexHeight));
+            tR += c.r;
+            tG += c.g;
+            tB += c.b;
+            colorCount ++;
+            x = realX + i;
+            y = realY + j;
+            x = x > mTexWidth ? mTexWidth : x;
+            y = y > mTexHeight ? mTexHeight : y;
+            c = texture2D(mTextureUnit, vec2(x / mTexWidth, y / mTexHeight));
+            tR += c.r;
+            tG += c.g;
+            tB += c.b;
+            colorCount ++;
+        }
+    }
+    color.r = tR / float(colorCount);
+    color.g = tG / float(colorCount);
+    color.b = tB / float(colorCount);
+    return color;
+}
 
 vec4 changeLight(vec4 color)
 {
@@ -25,6 +84,7 @@ vec4 filterColor(vec4 color)
     mediump float R = color.r;
     mediump float G = color.g;
     mediump float B = color.b;
+    mediump float A = color.a;
     if(1 == mFilterType)
     {
         // 黑白
@@ -90,6 +150,61 @@ vec4 filterColor(vec4 color)
         {
             color = texture2D(mTextureUnit, mTexCoord);
         }
+    }
+    else if(8 == mFilterType)
+    {
+        float f = (R + G + B) / 3.0f;
+        if(f >= 0.33f)
+        {
+            color.r = 1.0f;
+            color.g = 1.0f;
+            color.b = 1.0f;
+        }
+        else
+        {
+            color.r = 0.0f;
+            color.g = 0.0f;
+            color.b = 0.0f;
+        }
+    }
+    else if(9 == mFilterType)
+    {
+        // 高斯模糊，求一定区域颜色平均值
+        color = gaussBlur(color);
+    }
+    else if(10 == mFilterType)
+    {
+        vec4 bkColor = vec4(0.4f, 0.4f, 0.4f, 1.0f);
+        vec2 upLeftUV = vec2(mTexCoord.x - 1.0f / mTexWidth, mTexCoord.y - 1.0f / mTexHeight);
+        vec4 upLeftColor = texture2D(mTextureUnit, upLeftUV);
+        vec4 delColor = color - upLeftColor;
+
+        float luminance = (delColor.r * 0.2f + delColor.g * 0.7f + delColor.b * 0.07f) / 3.0f;
+        color = vec4(vec3(luminance), 0.0f) + bkColor;
+    }
+    else if(11 == mFilterType)
+    {
+        color = strongColor(color);
+    }
+    else if(12 == mFilterType)
+    {
+        // 得到真实坐标
+        float realX = mTexWidth * mTexCoord.x;
+        float realY = mTexHeight * mTexCoord.y;
+        float moduleWidth = mTexWidth / float(moduleCount);
+        float moduleHeight = mTexHeight / float(moduleCount);
+        while(realX >= moduleWidth)
+        {
+            realX -= moduleWidth;
+        }
+        while(realY >= moduleHeight)
+        {
+            realY -= moduleHeight;
+        }
+
+        float x = (realX * float(moduleCount)) / mTexWidth;
+        float y = (realY * float(moduleCount)) / mTexHeight;
+        color = texture2D(mTextureUnit, vec2(x, y));
     }
 
     return color;
