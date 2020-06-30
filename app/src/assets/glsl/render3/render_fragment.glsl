@@ -19,41 +19,39 @@ vec4 processBeautyBlur(vec4 color)
 {
     // 磨皮
     if(mScaleBlur > 0.01 && mScaleBlur <= 1.0) {
-        float x_a = mWidth;
-        float y_a = mHeight;
         vec3 centralColor = color.rgb;
 
-        float mul_x = 2.0 / x_a;
-        float mul_y = 2.0 / y_a;
-        vec2 blurCoordinates0 = mTexCoord + vec2(0.0 * mul_x, -10.0 * mul_y);
-        vec2 blurCoordinates2 = mTexCoord + vec2(8.0 * mul_x, -5.0 * mul_y);
-        vec2 blurCoordinates4 = mTexCoord + vec2(8.0 * mul_x, 5.0 * mul_y);
-        vec2 blurCoordinates6 = mTexCoord + vec2(0.0 * mul_x, 10.0 * mul_y);
-        vec2 blurCoordinates8 = mTexCoord + vec2(-8.0 * mul_x, 5.0 * mul_y);
-        vec2 blurCoordinates10 = mTexCoord + vec2(-8.0 * mul_x, -5.0 * mul_y);
+        float unitX = 2.0 / mWidth;
+        float unitY = 2.0 / mHeight;
+        vec2 blurCoordinates0 = mTexCoord + vec2(0.0 * unitX, -10.0 * unitY);
+        vec2 blurCoordinates2 = mTexCoord + vec2(8.0 * unitX, -5.0 * unitY);
+        vec2 blurCoordinates4 = mTexCoord + vec2(8.0 * unitX, 5.0 * unitY);
+        vec2 blurCoordinates6 = mTexCoord + vec2(0.0 * unitX, 10.0 * unitY);
+        vec2 blurCoordinates8 = mTexCoord + vec2(-8.0 * unitX, 5.0 * unitY);
+        vec2 blurCoordinates10 = mTexCoord + vec2(-8.0 * unitX, -5.0 * unitY);
 
-        mul_x = 1.8 / x_a;
-        mul_y = 1.8 / y_a;
-        vec2 blurCoordinates1 = mTexCoord + vec2(5.0 * mul_x, -8.0 * mul_y);
-        vec2 blurCoordinates3 = mTexCoord + vec2(10.0 * mul_x, 0.0 * mul_y);
-        vec2 blurCoordinates5 = mTexCoord + vec2(5.0 * mul_x, 8.0 * mul_y);
-        vec2 blurCoordinates7 = mTexCoord + vec2(-5.0 * mul_x, 8.0 * mul_y);
-        vec2 blurCoordinates9 = mTexCoord + vec2(-10.0 * mul_x, 0.0 * mul_y);
-        vec2 blurCoordinates11 = mTexCoord + vec2(-5.0 * mul_x, -8.0 * mul_y);
+        unitX = 1.8 / mWidth;
+        unitY = 1.8 / mHeight;
+        vec2 blurCoordinates1 = mTexCoord + vec2(5.0 * unitX, -8.0 * unitY);
+        vec2 blurCoordinates3 = mTexCoord + vec2(10.0 * unitX, 0.0 * unitY);
+        vec2 blurCoordinates5 = mTexCoord + vec2(5.0 * unitX, 8.0 * unitY);
+        vec2 blurCoordinates7 = mTexCoord + vec2(-5.0 * unitX, 8.0 * unitY);
+        vec2 blurCoordinates9 = mTexCoord + vec2(-10.0 * unitX, 0.0 * unitY);
+        vec2 blurCoordinates11 = mTexCoord + vec2(-5.0 * unitX, -8.0 * unitY);
 
-        mul_x = 1.6 / x_a;
-        mul_y = 1.6 / y_a;
-        vec2 blurCoordinates12 = mTexCoord + vec2(0.0 * mul_x,-6.0 * mul_y);
-        vec2 blurCoordinates14 = mTexCoord + vec2(-6.0 * mul_x,0.0 * mul_y);
-        vec2 blurCoordinates16 = mTexCoord + vec2(0.0 * mul_x,6.0 * mul_y);
-        vec2 blurCoordinates18 = mTexCoord + vec2(6.0 * mul_x,0.0 * mul_y);
+        unitX = 1.6 / mWidth;
+        unitY = 1.6 / mHeight;
+        vec2 blurCoordinates12 = mTexCoord + vec2(0.0 * unitX,-6.0 * unitY);
+        vec2 blurCoordinates14 = mTexCoord + vec2(-6.0 * unitX,0.0 * unitY);
+        vec2 blurCoordinates16 = mTexCoord + vec2(0.0 * unitX,6.0 * unitY);
+        vec2 blurCoordinates18 = mTexCoord + vec2(6.0 * unitX,0.0 * unitY);
 
-        mul_x = 1.4 / x_a;
-        mul_y = 1.4 / y_a;
-        vec2 blurCoordinates13 = mTexCoord + vec2(-4.0 * mul_x,-4.0 * mul_y);
-        vec2 blurCoordinates15 = mTexCoord + vec2(-4.0 * mul_x,4.0 * mul_y);
-        vec2 blurCoordinates17 = mTexCoord + vec2(4.0 * mul_x,4.0 * mul_y);
-        vec2 blurCoordinates19 = mTexCoord + vec2(4.0 * mul_x,-4.0 * mul_y);
+        unitX = 1.4 / mWidth;
+        unitY = 1.4 / mHeight;
+        vec2 blurCoordinates13 = mTexCoord + vec2(-4.0 * unitX,-4.0 * unitY);
+        vec2 blurCoordinates15 = mTexCoord + vec2(-4.0 * unitX,4.0 * unitY);
+        vec2 blurCoordinates17 = mTexCoord + vec2(4.0 * unitX,4.0 * unitY);
+        vec2 blurCoordinates19 = mTexCoord + vec2(4.0 * unitX,-4.0 * unitY);
 
         float central;
         float gaussianWeightTotal;
@@ -188,7 +186,7 @@ vec4 processBeautyBlur(vec4 color)
         gaussianWeightTotal += gaussianWeight;
         sum += sampler * gaussianWeight;
 
-        sum = sum/gaussianWeightTotal;
+        sum = sum / gaussianWeightTotal;
 
         sampler = centralColor.g - sum + 0.5;
 
