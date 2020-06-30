@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
         beans.add(new ActivityBean("多种图片显示方式", ShowImageActivity.class));
         beans.add(new ActivityBean("OpenGL ES基础绘制", GLRender1Activity.class));
         beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印、滤镜", GLRender2Activity.class));
-        beans.add(new ActivityBean("OpenGL ES、OpenCV实现高级美颜", GLRender3Activity.class));
+        beans.add(new ActivityBean("OpenGL ES实现高级美颜", GLRender3Activity.class));
         beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO高级特性", GLRender4Activity.class));
         beans.add(new ActivityBean("音频录制，播放，wav读写", AudioRecordActivity.class));
         beans.add(new ActivityBean("视频预览，获取NV21数据", VideoRecorderActivity.class));

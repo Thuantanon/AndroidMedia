@@ -2,7 +2,7 @@ package com.cxh.androidmedia.render.bean;
 
 /**
  * Created by Cxh
- * Time : 2020-06-27  13:01
+ * Time : 2020-05-27  13:01
  * Desc :
  */
 public class FilterBean {

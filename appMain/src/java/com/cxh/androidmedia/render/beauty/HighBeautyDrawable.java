@@ -13,7 +13,7 @@ import com.cxh.androidmedia.utils.OpenGLUtils;
 
 /**
  * Created by Cxh
- * Time : 2020-06-29  19:31
+ * Time : 2020-05-29  19:31
  * Desc :
  */
 public class HighBeautyDrawable extends BaseDrawable {
@@ -84,6 +84,7 @@ public class HighBeautyDrawable extends BaseDrawable {
         GLES30.glDisableVertexAttribArray(mVertexHandler);
         GLES30.glDisableVertexAttribArray(mTextureHandler);
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
+
     }
 
 
