@@ -123,10 +123,11 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
         mFilters.add(new FilterBean(6, "马赛克"));
         mFilters.add(new FilterBean(7, "马赛克2"));
         mFilters.add(new FilterBean(8, "艺术"));
-        mFilters.add(new FilterBean(9, "高斯模糊"));
-        mFilters.add(new FilterBean(10, "浮雕"));
-        mFilters.add(new FilterBean(11, "加强"));
-        mFilters.add(new FilterBean(12, "九宫格"));
+        mFilters.add(new FilterBean(9, "均值模糊"));
+        mFilters.add(new FilterBean(10, "高斯模糊"));
+        mFilters.add(new FilterBean(11, "浮雕"));
+        mFilters.add(new FilterBean(12, "加强"));
+        mFilters.add(new FilterBean(13, "九宫格"));
         mAdapter.setList(mFilters);
     }
 

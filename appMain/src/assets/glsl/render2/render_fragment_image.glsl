@@ -7,7 +7,7 @@ uniform float mWhiteScale;
 varying vec2 mTexCoord;
 
 const float mosaicSize = 20.0f;
-const float gaussBlurRadius = 5.0f;
+const int gaussBlurRadius = 10;
 const int moduleCount = 3;
 
 vec4 strongColor(vec4 color)
@@ -28,16 +28,16 @@ vec4 strongColor(vec4 color)
     return color;
 }
 
-vec4 gaussBlur(vec4 color)
+vec4 averageBlur(vec4 color)
 {
     // 高斯模糊，求一定区域颜色平均值
     float realX = mTexWidth * mTexCoord.x;
     float realY = mTexHeight * mTexCoord.y;
     float colorCount = 0.0f;
     float tR,tG,tB;
-    for(float i = 0.0f; i < gaussBlurRadius; i += 0.5f)
+    for(float i = 0.0f; i < float(gaussBlurRadius); i += 1.0f)
     {
-        for(float j = 0.0f; j < gaussBlurRadius; j += 0.5f)
+        for(float j = 0.0f; j < float(gaussBlurRadius); j += 1.0f)
         {
             float x,y;
             vec4 c;
@@ -65,6 +65,39 @@ vec4 gaussBlur(vec4 color)
     color.g = tG / float(colorCount);
     color.b = tB / float(colorCount);
     return color;
+}
+
+vec4 gaussBlur(vec4 color, int vertical)
+{
+    // 权重因子，离中心点越近权重越高
+    float weightUnit = 1.0 / float(gaussBlurRadius);
+    float weight = 1.0f;
+    float weightSum = weight;
+    vec3 centerColor = color.rgb * weight;
+    if(1 == vertical)
+    {
+        for(int i = 1; i < gaussBlurRadius; i ++)
+        {
+            float minUnit = float(i) / mTexHeight;
+            weight -= weightUnit;
+            weightSum += weight * 2.0;
+            centerColor += texture2D(mTextureUnit, vec2(mTexCoord.x, mTexCoord.y + minUnit)).rgb * weight;
+            centerColor += texture2D(mTextureUnit, vec2(mTexCoord.x, mTexCoord.y - minUnit)).rgb * weight;
+        }
+    }
+    else
+    {
+        for(int i = 1; i < gaussBlurRadius; i ++)
+        {
+            float minUnit = float(i) / mTexWidth;
+            weight -= weightUnit;
+            weightSum += weight * 2.0;
+            centerColor += texture2D(mTextureUnit, vec2(mTexCoord.x + minUnit, mTexCoord.y)).rgb * weight;
+            centerColor += texture2D(mTextureUnit, vec2(mTexCoord.x - minUnit, mTexCoord.y)).rgb * weight;
+        }
+    }
+
+    return vec4(centerColor / weightSum, color.a);
 }
 
 vec4 changeLight(vec4 color)
@@ -169,10 +202,17 @@ vec4 filterColor(vec4 color)
     }
     else if(9 == mFilterType)
     {
-        // 高斯模糊，求一定区域颜色平均值
-        color = gaussBlur(color);
+        // 均值模糊，求一定区域颜色平均值
+        color = averageBlur(color);
     }
     else if(10 == mFilterType)
+    {
+        // 高斯模糊，求临近区域权重值
+        vec4 vertColor = gaussBlur(color, 1);
+        vec4 horiColor = gaussBlur(color, 0);
+        color = (vertColor + horiColor) / 2.0;
+    }
+    else if(11 == mFilterType)
     {
         vec4 bkColor = vec4(0.4f, 0.4f, 0.4f, 1.0f);
         vec2 upLeftUV = vec2(mTexCoord.x - 1.0f / mTexWidth, mTexCoord.y - 1.0f / mTexHeight);
@@ -182,11 +222,11 @@ vec4 filterColor(vec4 color)
         float luminance = (delColor.r * 0.2f + delColor.g * 0.7f + delColor.b * 0.07f) / 3.0f;
         color = vec4(vec3(luminance), 0.0f) + bkColor;
     }
-    else if(11 == mFilterType)
+    else if(12 == mFilterType)
     {
         color = strongColor(color);
     }
-    else if(12 == mFilterType)
+    else if(13 == mFilterType)
     {
         // 得到真实坐标
         float realX = mTexWidth * mTexCoord.x;
