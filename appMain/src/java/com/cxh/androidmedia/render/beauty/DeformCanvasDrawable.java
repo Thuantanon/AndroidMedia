@@ -16,6 +16,7 @@ import com.cxh.androidmedia.base.AMApp;
 import com.cxh.androidmedia.render.BaseDrawable;
 import com.cxh.androidmedia.render.bean.BitmapTexture;
 import com.cxh.androidmedia.utils.BitsUtil;
+import com.cxh.androidmedia.utils.CCLog;
 import com.cxh.androidmedia.utils.FileUtil;
 import com.cxh.androidmedia.utils.OpenGLUtils;
 
@@ -106,7 +107,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, mBgTexture.mTextureId);
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, vertexIndex.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(vertexIndex));
 
-        if(mDrawWater) {
+        if (mDrawWater) {
             // 解绑纹理
             GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, 0);
             OpenGLUtils.setUnifrom1i(mGLProgram, "mFilterType", 0);
@@ -151,7 +152,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
         };
     }
 
-    private float[] getWaterPositionArray(float x, float y){
+    private float[] getWaterPositionArray(float x, float y) {
         // 水印在图片的右下角
         float sizeScale = Math.min(1.0f - mSizeScale, 1.0f);
         float left = (mBgTexture.mVertexScaleX - x * 1.5f) * sizeScale;
@@ -212,6 +213,8 @@ public class DeformCanvasDrawable extends BaseDrawable {
      */
     public void savePicture(int width, int height) {
 
+        long timeStart = System.currentTimeMillis();
+
         int realX = 0;
         int realY = 0;
         int realWidth = width;
@@ -248,5 +251,12 @@ public class DeformCanvasDrawable extends BaseDrawable {
         message.arg1 = realWidth;
         message.arg2 = realHeight;
         mMainHandler.sendMessage(message);
+
+        long timeTotal = System.currentTimeMillis() - timeStart;
+        CCLog.i("total time : " + timeTotal);
+
+        // glReadPixels是最简单，最低效的处理方式
+        // 使用PBO，相对glReadPixels性能大幅提升
+        // 使用ImageReader，据说性能更快
     }
 }

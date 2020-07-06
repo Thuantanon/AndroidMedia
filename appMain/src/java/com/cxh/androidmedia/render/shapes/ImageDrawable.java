@@ -34,6 +34,7 @@ public class ImageDrawable extends BaseDrawable {
     private static final String FRAGMENT_SHADER = "" +
             "precision mediump float; " +
             "uniform sampler2D uTextureUnit; " +
+            "uniform sampler2D uTextureUnit2; " +
             "varying vec2 vTexCoord; " +
             "void main(){ " +
             "gl_FragColor = texture2D(uTextureUnit,vTexCoord); " +

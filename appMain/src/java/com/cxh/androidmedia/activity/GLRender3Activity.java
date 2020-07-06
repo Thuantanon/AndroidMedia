@@ -62,7 +62,8 @@ public class GLRender3Activity extends BaseActivity implements IDrawableProvider
         mSurfaceView.setKeepScreenOn(true);
         mSurfaceView.setZOrderOnTop(false);
         mSurfaceView.setPreserveEGLContextOnPause(true);
-        mSurfaceView.setEGLContextClientVersion(2);
+        mSurfaceView.setEGLContextClientVersion(3);
+        mSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
         mDrawRender = new ClassicDrawRender(this);
         mSurfaceView.setRenderer(mDrawRender);
         mSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);

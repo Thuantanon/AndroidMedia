@@ -52,7 +52,8 @@ public class GLRender1Activity extends BaseActivity {
         mSurfaceView.setKeepScreenOn(true);
         mSurfaceView.setZOrderOnTop(false);
         mSurfaceView.setPreserveEGLContextOnPause(true);
-        mSurfaceView.setEGLContextClientVersion(2);
+        mSurfaceView.setEGLContextClientVersion(3);
+        mSurfaceView.setEGLConfigChooser(8,8,8,8,16,0);
         mGlRender = new StandardRender();
         mSurfaceView.setRenderer(mGlRender);
 
