@@ -17,6 +17,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cxh.androidmedia.utils.CCLog;
+import com.cxh.androidmedia.utils.ToastUtil;
+
 import java.lang.ref.WeakReference;
 
 import butterknife.ButterKnife;
@@ -161,5 +164,15 @@ public abstract class BaseActivity extends AppCompatActivity {
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
+    }
+
+
+    public void errorFinish(Throwable t, String message){
+        if(null != t){
+            t.printStackTrace();
+            message += " , " + t.toString();
+        }
+        ToastUtil.show(mContext, message);
+        CCLog.i(message);
     }
 }

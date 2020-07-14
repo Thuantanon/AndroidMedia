@@ -2,17 +2,28 @@ package com.cxh.androidmedia.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.media.Image;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.cxh.androidmedia.base.AMApp;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,6 +41,11 @@ public class FileUtil {
     public static final String PATH_AUDIO = ROOT_PATH + File.separator + "audio";
     public static final String PATH_VIDEO = ROOT_PATH + File.separator + "video";
     public static final String PATH_IMAGE = ROOT_PATH + File.separator + "image";
+    // 子目录
+    // 截屏
+    public static final String PATH_IMAGE_SHOT = PATH_IMAGE + File.separator + "screenshot";
+    // 拍照
+    public static final String PATH_IMAGE_PHOTO = PATH_IMAGE + File.separator + "photo";
 
     static {
 
@@ -51,10 +67,16 @@ public class FileUtil {
             CCLog.i(String.format("init dir %s result = " + result, videoDir.getAbsoluteFile()));
         }
 
-        File imageDir = new File(PATH_IMAGE);
-        if (!imageDir.exists() || !imageDir.isDirectory()) {
-            boolean result = imageDir.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, imageDir.getAbsoluteFile()));
+        File imageShotDir = new File(PATH_IMAGE_SHOT);
+        if (!imageShotDir.exists() || !imageShotDir.isDirectory()) {
+            boolean result = imageShotDir.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, imageShotDir.getAbsoluteFile()));
+        }
+
+        File imagePhotoDir = new File(PATH_IMAGE_PHOTO);
+        if (!imagePhotoDir.exists() || !imagePhotoDir.isDirectory()) {
+            boolean result = imagePhotoDir.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, imagePhotoDir.getAbsoluteFile()));
         }
     }
 
@@ -64,9 +86,9 @@ public class FileUtil {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !Environment.isExternalStorageLegacy()) {
             File rootFile = AMApp.get().getExternalFilesDir("");
             // 去不到就用内存
-            if(null != rootFile){
+            if (null != rootFile) {
                 rootDir = rootFile.getAbsolutePath();
-            }else {
+            } else {
                 rootDir = AMApp.get().getFilesDir().getAbsolutePath();
             }
         } else {
@@ -152,6 +174,42 @@ public class FileUtil {
         return "";
     }
 
+
+    public static boolean saveNV21ToStorage(byte[] data, int width, int height, String path, boolean face) {
+        Bitmap sorceBitmap = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        try {
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            YuvImage yuvImage = new YuvImage(data, ImageFormat.NV21, width, height, null);
+            yuvImage.compressToJpeg(new Rect(0, 0, yuvImage.getWidth(), yuvImage.getHeight()), 100, byteArrayOutputStream);
+            sorceBitmap = BitmapFactory.decodeByteArray(byteArrayOutputStream.toByteArray(), 0, byteArrayOutputStream.size());
+            // 旋转
+            Matrix matrix = new Matrix();
+            if(face) {
+                matrix.setScale(1, -1);
+                Bitmap cacheBitmap = Bitmap.createBitmap(sorceBitmap, 0, 0, width, height, matrix, false);
+                sorceBitmap.recycle();
+                sorceBitmap = cacheBitmap;
+                matrix.reset();
+                matrix.setRotate(270);
+            }else {
+                matrix.setRotate(90);
+            }
+            Bitmap bitmap = Bitmap.createBitmap(sorceBitmap, 0, 0, width, height, matrix, false);
+            saveBitmapToStorage(bitmap, path);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            CCLog.i(e.toString());
+        } finally {
+            if (null != sorceBitmap) {
+                sorceBitmap.recycle();
+            }
+            tryClose(byteArrayOutputStream);
+        }
+        return false;
+    }
+
     public static void saveBitmapToStorage(int[] data, int width, int height, String path) {
         Bitmap bitmap = null;
         try {
@@ -175,6 +233,23 @@ public class FileUtil {
             CCLog.i("写入失败：" + e.toString());
         } finally {
             tryClose(outputStream);
+        }
+        return false;
+    }
+
+    public static boolean saveImagePicture(@NonNull Image image, String path){
+        ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+        byte[] data = new byte[buffer.remaining()];
+        buffer.get(data);
+        FileOutputStream fileOutputStream = null;
+        try{
+            fileOutputStream = new FileOutputStream(path);
+            fileOutputStream.write(data);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            tryClose(fileOutputStream);
         }
         return false;
     }

@@ -272,7 +272,7 @@ public class GLRender2Activity extends BaseActivity implements IDrawableProvider
                 .setPositiveButton("保存", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        StringBuilder sb = new StringBuilder(FileUtil.PATH_IMAGE);
+                        StringBuilder sb = new StringBuilder(FileUtil.PATH_IMAGE_SHOT);
                         sb.append(File.separator);
                         sb.append("gles_screenshot_");
                         sb.append(System.currentTimeMillis());

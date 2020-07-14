@@ -43,7 +43,7 @@ public class HighBeautyDrawable extends BaseDrawable {
         GLES30.glDeleteShader(vertexShader);
         GLES30.glDeleteShader(fragShader);
 
-        mImageTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty5);
+        mImageTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty6);
     }
 
     @Override

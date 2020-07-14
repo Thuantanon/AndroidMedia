@@ -1,7 +1,16 @@
 package com.cxh.androidmedia.activity;
 
+import android.graphics.SurfaceTexture;
+import android.opengl.GLSurfaceView;
+import android.view.Surface;
+
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import butterknife.BindView;
 
 /**
  * Created by Cxh
@@ -9,6 +18,9 @@ import com.cxh.androidmedia.base.BaseActivity;
  * Desc : 使用GLSurfaceView预览Camera
  */
 public class GLRender5Activity extends BaseActivity {
+
+    @BindView(R.id.gl_surfaceview)
+    GLSurfaceView mSurfaceView;
 
     @Override
     protected int getLayoutRes() {
@@ -18,6 +30,9 @@ public class GLRender5Activity extends BaseActivity {
     @Override
     protected void init() {
 
+        SurfaceTexture surfaceTexture;
 
     }
+
+
 }

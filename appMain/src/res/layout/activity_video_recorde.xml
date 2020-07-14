@@ -44,6 +44,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:background="@drawable/shape_camera_option_bg"
             />
 
@@ -59,6 +60,7 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:layout_margin="5dp"
+            android:visibility="gone"
             android:background="@drawable/shape_camera_option_bg"
             />
 
@@ -68,7 +70,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorWhite"
             android:gravity="center"
-            android:text="方向"
+            android:text="切换方向"
             android:paddingStart="18dp"
             android:paddingEnd="18dp"
             android:paddingTop="8dp"
