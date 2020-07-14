@@ -30,7 +30,7 @@ public class GLRender5Activity extends BaseActivity {
     @Override
     protected void init() {
 
-        SurfaceTexture surfaceTexture;
+
 
     }
 
