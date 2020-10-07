@@ -24,7 +24,7 @@ public class AcitivityAdapterItem implements IAdapterViewItem<Object> {
 
     @Override
     public int getLayoutRes() {
-        return R.layout.item_string;
+        return R.layout.item_activity;
     }
 
     @Override
@@ -35,7 +35,8 @@ public class AcitivityAdapterItem implements IAdapterViewItem<Object> {
     @Override
     public void onBindData(CommonBaseRVHolder holder, Object data, int position) {
         final ActivityBean activityBean = (ActivityBean) data;
-        holder.setText(R.id.content, activityBean.getTitle());
+        holder.setText(R.id.content, position + " - " + activityBean.getTitle());
+        holder.setText(R.id.tv_activity_name, activityBean.getMClass().getName());
         holder.getRootView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

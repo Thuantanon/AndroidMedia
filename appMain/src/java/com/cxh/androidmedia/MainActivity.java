@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cxh.androidmedia.activity.AudioRecordActivity;
-import com.cxh.androidmedia.activity.GLRender1Activity;
-import com.cxh.androidmedia.activity.GLRender2Activity;
-import com.cxh.androidmedia.activity.GLRender3Activity;
-import com.cxh.androidmedia.activity.GLRender4Activity;
-import com.cxh.androidmedia.activity.GLRender5Activity;
+import com.cxh.androidmedia.activity.GLCamera1Activity;
+import com.cxh.androidmedia.activity.GLRenderActivity;
+import com.cxh.androidmedia.activity.GLFilterActivity;
+import com.cxh.androidmedia.activity.GLFeatureActivity;
+import com.cxh.androidmedia.activity.GLCamera2Activity;
 import com.cxh.androidmedia.activity.MediaCodec1Activity;
 import com.cxh.androidmedia.activity.MediaCodec2Activity;
 import com.cxh.androidmedia.activity.MediaCodec3Activity;
@@ -58,13 +58,13 @@ public class MainActivity extends BaseActivity {
 
         List<Object> beans = new ArrayList<>();
         beans.add(new ActivityBean("多种图片显示方式", ShowImageActivity.class));
-        beans.add(new ActivityBean("OpenGL ES基础绘制", GLRender1Activity.class));
-        beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印、滤镜", GLRender2Activity.class));
-        beans.add(new ActivityBean("OpenGL ES实现高级美颜", GLRender3Activity.class));
-        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO高级特性", GLRender4Activity.class));
+        beans.add(new ActivityBean("OpenGL ES基础绘制", GLRenderActivity.class));
+        beans.add(new ActivityBean("OpenGL ES裁剪、旋转、水印、滤镜", GLFilterActivity.class));
+        beans.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO特性", GLFeatureActivity.class));
+        beans.add(new ActivityBean("OpenGL ES、SurfaceView美颜相机", GLCamera1Activity.class));
+        beans.add(new ActivityBean("OpenGL ES、Camera2美颜相机", GLCamera2Activity.class));
         beans.add(new ActivityBean("音频录制、播放，wav、mp3读写", AudioRecordActivity.class));
         beans.add(new ActivityBean("视频预览，获取NV21数据", VideoRecorderActivity.class));
-        beans.add(new ActivityBean("使用SurfaceView预览Camera", GLRender5Activity.class));
         beans.add(new ActivityBean("MediaCodec解析、封装Mp4文件", MediaCodec1Activity.class));
         beans.add(new ActivityBean("MediaCodec硬编、硬解AAC和H264", MediaCodec2Activity.class));
         beans.add(new ActivityBean("音视频采集、编码、封装Mp4文件", MediaCodec3Activity.class));

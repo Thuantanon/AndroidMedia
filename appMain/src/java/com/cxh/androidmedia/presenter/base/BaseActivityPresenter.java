@@ -1,6 +1,7 @@
 package com.cxh.androidmedia.presenter.base;
 
 import android.app.Activity;
+import android.os.Message;
 
 import androidx.annotation.NonNull;
 
@@ -13,5 +14,29 @@ public abstract class BaseActivityPresenter<T extends Activity> extends IPresent
 
     public BaseActivityPresenter(@NonNull T target) {
         super(target);
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    public void handleMainMessage(Message message){
+
     }
 }

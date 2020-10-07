@@ -25,4 +25,20 @@
         <item name="android:state_multiline">true</item>
     </style>
 
+    <style name="CommonNoTitleDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@null</item>
+
+    </style>
+
+    <style name="CommonBottomSheet" parent="CommonNoTitleDialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/AnimSlide</item>
+    </style>
+
+    <style name="AnimSlide">
+        <item name="android:windowExitAnimation">@anim/anim_slide_down</item>
+        <item name="android:windowEnterAnimation">@anim/anim_slide_up</item>
+    </style>
+
 </resources>

@@ -17,7 +17,7 @@ android {
         }
         ndk {
             moduleName "android_media"
-            abiFilters 'armeabi-v7a', 'x86' // 使用模拟器时加上
+            abiFilters 'arm64-v8a' // 'x86' // 使用模拟器时加上
         }
     }
 
@@ -80,11 +80,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation "com.google.android.material:material:1.1.0"
+    implementation "com.google.android.material:material:1.2.1"
     implementation "com.android.support:cardview-v7:$rootProject.ext.buildToolsVersion"
+
+    // modules
+    implementation project(':FaceDetection')
 
     // butterknife
     implementation 'com.jakewharton:butterknife:10.0.0'
@@ -94,4 +97,5 @@ dependencies {
     // rxjava
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
 }

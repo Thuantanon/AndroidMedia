@@ -7,7 +7,7 @@ import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.common.CommonBaseRVHolder;
 import com.cxh.androidmedia.common.CommonBaseRvAdapter;
 import com.cxh.androidmedia.common.IAdapterViewItem;
-import com.cxh.androidmedia.render.bean.BeautyBean;
+import com.cxh.androidmedia.render_old.bean.BeautyBean;
 
 /**
  * Created by Cxh

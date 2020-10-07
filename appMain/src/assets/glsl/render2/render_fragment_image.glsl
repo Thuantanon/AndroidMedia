@@ -250,6 +250,9 @@ vec4 filterColor(vec4 color)
     return color;
 }
 
+
+// 这里为了方便，将很多渲染代码写在一个shader里面，实际使用一般是用一个个FBO组成流水线的
+// 关于FBO自行了解，它就是一个绘制目的地址，正常情况屏幕是从默认的FBO取数据显示
 void main()
 {
      vec4 color = texture2D(mTextureUnit, mTexCoord);

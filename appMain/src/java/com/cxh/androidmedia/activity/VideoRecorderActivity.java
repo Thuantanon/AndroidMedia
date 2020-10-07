@@ -203,7 +203,7 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
                 } else {
                     adjustSurfaceSize(parameters.getPreviewSize());
                     ToastUtil.show(mContext, "没有合适的预览尺寸");
-                    CCLog.i("no fit preview size, user default size. " + parameters.getPreviewSize().width + " , " + parameters.getPreviewSize().height);
+                    CCLog.i("no fit yuv size, user default size. " + parameters.getPreviewSize().width + " , " + parameters.getPreviewSize().height);
                 }
 
                 mCamera.setParameters(parameters);

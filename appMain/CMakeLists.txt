@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.4.1)
 
 project(AndroidMedia)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/${ANDROID_ABI})
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/${ANDROID_ABI})
 
 # 搜索当前目录下的所有.cpp文件
 aux_source_directory(src/jni SRC_LIST)

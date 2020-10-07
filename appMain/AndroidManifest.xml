@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera2" android:required="true"/>
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature
@@ -61,27 +62,27 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRender1Activity"
+            android:name=".activity.GLRenderActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRender2Activity"
+            android:name=".activity.GLFilterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRender3Activity"
+            android:name=".activity.GLCamera1Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRender4Activity"
+            android:name=".activity.GLFeatureActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRender5Activity"
+            android:name=".activity.GLCamera2Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 

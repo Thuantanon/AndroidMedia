@@ -4,6 +4,5 @@
     <string name="white_light">亮度(%1$d)</string>
     <string name="white_scale">缩放(%1$d)</string>
     <string name="white_rotate">旋转(%1$d)</string>
-    <string name="beauty_scale">%1$s(%2$d)</string>
 
 </resources>

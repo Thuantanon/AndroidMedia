@@ -46,6 +46,10 @@ public class FileUtil {
     public static final String PATH_IMAGE_SHOT = PATH_IMAGE + File.separator + "screenshot";
     // 拍照
     public static final String PATH_IMAGE_PHOTO = PATH_IMAGE + File.separator + "photo";
+    // Face
+    public static final String PATH_FACE = "FaceModel";
+    // 人脸模型
+    public static String PATH_FACE_MODELS = "";
 
     static {
 
@@ -78,6 +82,8 @@ public class FileUtil {
             boolean result = imagePhotoDir.mkdirs();
             CCLog.i(String.format("init dir %s result = " + result, imagePhotoDir.getAbsoluteFile()));
         }
+
+        PATH_FACE_MODELS = ROOT_PATH + File.separator + PATH_FACE;
     }
 
     public static String getRootPath() {
@@ -157,7 +163,7 @@ public class FileUtil {
      * @param filePath
      * @return
      */
-    public static String readRenderScriptFromAssets(Context context, String filePath) {
+    public static String readShaderFromAssets(Context context, String filePath) {
         InputStream in = null;
         try {
             in = context.getAssets().open(filePath);
@@ -174,6 +180,16 @@ public class FileUtil {
         return "";
     }
 
+    /**
+     * 读取assets文本文件
+     *
+     * @param filePath
+     * @return
+     */
+    public static String readShaderFromAssets(String filePath) {
+        return readShaderFromAssets(AMApp.get(), filePath);
+    }
+
 
     public static boolean saveNV21ToStorage(byte[] data, int width, int height, String path, boolean face) {
         Bitmap sorceBitmap = null;
@@ -185,14 +201,14 @@ public class FileUtil {
             sorceBitmap = BitmapFactory.decodeByteArray(byteArrayOutputStream.toByteArray(), 0, byteArrayOutputStream.size());
             // 旋转
             Matrix matrix = new Matrix();
-            if(face) {
+            if (face) {
                 matrix.setScale(1, -1);
                 Bitmap cacheBitmap = Bitmap.createBitmap(sorceBitmap, 0, 0, width, height, matrix, false);
                 sorceBitmap.recycle();
                 sorceBitmap = cacheBitmap;
                 matrix.reset();
                 matrix.setRotate(270);
-            }else {
+            } else {
                 matrix.setRotate(90);
             }
             Bitmap bitmap = Bitmap.createBitmap(sorceBitmap, 0, 0, width, height, matrix, false);
@@ -237,20 +253,56 @@ public class FileUtil {
         return false;
     }
 
-    public static boolean saveImagePicture(@NonNull Image image, String path){
+    public static boolean saveImagePicture(@NonNull Image image, String path) {
         ByteBuffer buffer = image.getPlanes()[0].getBuffer();
         byte[] data = new byte[buffer.remaining()];
         buffer.get(data);
         FileOutputStream fileOutputStream = null;
-        try{
+        try {
             fileOutputStream = new FileOutputStream(path);
             fileOutputStream.write(data);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             tryClose(fileOutputStream);
         }
         return false;
+    }
+
+    public static String copyFilesFromAssets(Context context, String oldPath, String newPath) {
+        try {
+            String[] fileNames = context.getAssets().list(oldPath);
+            if (null != fileNames && fileNames.length > 0) {
+                // directory
+                File file = new File(newPath);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+
+                for (String fileName : fileNames) {
+                    copyFilesFromAssets(context, oldPath + "/" + fileName,
+                            newPath + "/" + fileName);
+                }
+            } else {
+                // file
+                InputStream is = context.getAssets().open(oldPath);
+                FileOutputStream fos = new FileOutputStream(new File(newPath));
+                byte[] buffer = new byte[1024];
+                int byteCount;
+                while ((byteCount = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, byteCount);
+                }
+                fos.flush();
+                is.close();
+                fos.close();
+            }
+
+            return newPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
