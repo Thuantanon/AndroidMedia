@@ -1,6 +1,7 @@
 package com.cxh.androidmedia;
 
 import android.Manifest;
+import android.util.Log;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +27,9 @@ import com.cxh.androidmedia.activity.VideoRecorderActivity;
 import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
 import com.cxh.androidmedia.base.BaseActivity;
 import com.cxh.androidmedia.beans.ActivityBean;
+import com.cxh.androidmedia.utils.CCLog;
 import com.cxh.androidmedia.utils.ToastUtil;
+import com.cxh.mp3lame.LameEngine;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
@@ -79,6 +82,9 @@ public class MainActivity extends BaseActivity {
         mRvAdapter.setList(beans);
 
         requestPermission();
+
+        String version = LameEngine.getNameVersion();
+        CCLog.i(version);
     }
 
 

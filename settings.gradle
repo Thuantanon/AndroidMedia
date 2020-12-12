@@ -1,1 +1,1 @@
-include ':appMain', ':FaceDetection'
+include ':appMain', ':FaceDetection', ':mp3lame'

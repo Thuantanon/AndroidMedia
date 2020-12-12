@@ -221,4 +221,40 @@ public class Note {
      */
 
 
+    /**
+     *
+     *
+     * Android音视频学习路线
+     *
+     * 一、图形绘制基础（pass）
+     *
+     * 1、学习Android图片显示方式：ImageView、Canvas（View、SurfaceView、TextureView）
+     * 2、学习OpenGL ES的基本概念，并绘制三角形、多边形、圆、立方体、图片等基本图形
+     * 3、学习OpenGL ES的纹理绘制，并实现图片的裁剪、旋转、缩放、水印、滤镜等效果
+     * 4、学习OpenGL ES的VBO、VAO、EBO、FBO等高级特性，实现离屏渲染
+     * 5、使用OpenGL ES、SurfaceView/GLSurfaceView/TextureView预览Camera1/Camera2，并实现美颜滤镜效果
+     *
+     * 二、音视频编码解码基础
+     *
+     * 1、使用AudioTrack和AudioRecord采集、播放PCM数据，并实现wav、Mp3等常见音频格式的读写
+     * 2、学习MediaCodec的API，实现Mp4文件的解析、封装
+     * 3、学习MediaCodec的API，实现AAC、H264的硬编、硬解
+     * 4、学习MediaCodec的API，实现采集、编码、封装Mp4文件
+     * 5、学习MediaCodec的API，实现Mp4文件的解析、解码、播放、渲染
+     *
+     * 三、音视频应用学习
+     *
+     * 1、学习网络协议RTMP、HLS等，以及封包格式FLV、Mp4等
+     * 2、学习开源项目ijkplayer
+     * 3、移植ffmpeg，实现简易播放器
+     * 4、移植x264，实现H264软编码
+     * 5、移植librtmp，实现rtmp推流功能
+     * 6、其他开源项目：WebRTC、libyuv等
+     *
+     * 四、音视频小项目
+     *
+     * 1、仿“抖音”页面，完成以下功能：断点拍摄、添加水印、本地转码，视频剪辑、视频拼接、MV特效等
+     *
+     */
+
 }

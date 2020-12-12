@@ -42,7 +42,7 @@ vec4 bigEye()
     if ((mScale >= 0.001 && mScale <= 1.0) && noPointDis > 0.0)
     {
         vec2 eyeCenter = (leftPoint + rightPoint) / 2.0;
-        float radius = distance(leftPoint, rightPoint) * 1.4;
+        float radius = distance(leftPoint, rightPoint) * 1.2;
         color = filterMagnifire(color, eyeCenter, radius);
     }
 

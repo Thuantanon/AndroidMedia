@@ -95,6 +95,8 @@ public class GLCamera1Activity extends BaseActivity implements SurfaceHolder.Cal
             return;
         }
 
+        CCLog.i(data.getBeautyType() + "  --- " + data.getBeautyScale());
+
         switch (data.getBeautyType()) {
             case BeautyParams.BEAUTY_TYPE_WHITE:
                 mSurfaceViewRender.getInputWhiteFilter().setScale(data.getBeautyScale());
@@ -120,7 +122,7 @@ public class GLCamera1Activity extends BaseActivity implements SurfaceHolder.Cal
                 mSurfaceViewRender.getMouthFilter().setScale(data.getBeautyScale());
                 break;
             case BeautyParams.BEAUTY_TYPE_THIN_FACE:
-
+                mSurfaceViewRender.setFaceScale(data.getBeautyScale());
                 break;
         }
     }

@@ -90,7 +90,7 @@ public class TriangleDrawable extends BaseDrawable {
          * ptr： 本地数据缓存（这里我们的是顶点的位置和颜色数据）。
          */
         GLES30.glVertexAttribPointer(mPositionHandler,
-                COORDS_PER_VERTEX, GLES30.GL_FLOAT, false, mVertexStride, BitsUtil.arraysToBuffer(triangleVertex));
+                COORDS_PER_VERTEX, GLES30.GL_FLOAT, false, 0, BitsUtil.arraysToBuffer(triangleVertex));
         // 启用顶点着色器句柄
         GLES30.glEnableVertexAttribArray(mPositionHandler);
 

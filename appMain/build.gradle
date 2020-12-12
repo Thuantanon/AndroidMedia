@@ -81,13 +81,14 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation "com.google.android.material:material:1.2.1"
     implementation "com.android.support:cardview-v7:$rootProject.ext.buildToolsVersion"
 
     // modules
     implementation project(':FaceDetection')
+    implementation project(':mp3lame')
 
     // butterknife
     implementation 'com.jakewharton:butterknife:10.0.0'

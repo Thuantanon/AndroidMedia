@@ -7,6 +7,7 @@ import com.cxh.androidmedia.render_new.TestFaceFilter;
 import com.cxh.androidmedia.render_new.filter.TextureBlurFilter;
 import com.cxh.androidmedia.render_new.filter.TextureEyeFilter;
 import com.cxh.androidmedia.render_new.filter.TextureEyeShadowFilter;
+import com.cxh.androidmedia.render_new.filter.TextureFaceFilter;
 import com.cxh.androidmedia.render_new.filter.TextureMouthFilter;
 import com.cxh.androidmedia.render_new.filter.TextureNoseFilter;
 import com.cxh.androidmedia.render_new.filter.TexturePreviewFilter;
@@ -34,6 +35,8 @@ public class SurfaceViewRender extends BaseGLRender {
     private TextureEyeFilter mRightEyeFilter;
     private TextureNoseFilter mNoseFilter;
     private TextureMouthFilter mMouthFilter;
+    private TextureFaceFilter mFaceLeftFilter;
+    private TextureFaceFilter mFaceRightFilter;
 
     private TexturePreviewFilter mPreviewFilter;
     private float[] mFacePoints;
@@ -56,6 +59,8 @@ public class SurfaceViewRender extends BaseGLRender {
         mRightEyeFilter = new TextureEyeFilter(width, height);
         mNoseFilter = new TextureNoseFilter(width, height);
         mMouthFilter = new TextureMouthFilter(width, height);
+        mFaceLeftFilter = new TextureFaceFilter(width, height);
+        mFaceRightFilter = new TextureFaceFilter(width, height);
         mPreviewFilter = new TexturePreviewFilter(width, height);
 
         mFaceFilter = new TestFaceFilter();
@@ -79,6 +84,8 @@ public class SurfaceViewRender extends BaseGLRender {
             fboTextureId = mRightEyeFilter.draw(fboTextureId, mWidth, mHeight);
             fboTextureId = mNoseFilter.draw(fboTextureId, mWidth, mHeight);
             fboTextureId = mMouthFilter.draw(fboTextureId, mWidth, mHeight);
+            fboTextureId = mFaceLeftFilter.draw(fboTextureId, mWidth, mHeight);
+            fboTextureId = mFaceRightFilter.draw(fboTextureId, mWidth, mHeight);
             mPreviewFilter.draw(fboTextureId, mWidth, mHeight);
 
 //        if(null != mFacePoints) {
@@ -133,6 +140,16 @@ public class SurfaceViewRender extends BaseGLRender {
         // 右脸
         float[] ruddyRightLeft = new float[]{0, 0};
         float[] ruddyRightRight = new float[]{0, 0};
+        // 左脸控制点
+        float[] faceLeftTop = new float[]{0, 0};
+        float[] faceLeftBottom = new float[]{0, 0};
+        // 右脸控制点
+        float[] faceRightTop = new float[]{0, 0};
+        float[] faceRightBottom = new float[]{0, 0};
+
+        // 瘦脸控制点
+        float[] leftFaceControl = new float[]{0, 0};
+        float[] rightFaceControl = new float[]{0, 0};
 
         if (null != points) {
             leftLeftEye[0] = points[94 * 2];
@@ -170,6 +187,21 @@ public class SurfaceViewRender extends BaseGLRender {
             ruddyRightLeft[1] = points[93 * 2 + 1];
             ruddyRightRight[0] = points[17 * 2];
             ruddyRightRight[1] = points[17 * 2 + 1];
+
+            faceLeftTop[0] = points[9 * 2];
+            faceLeftTop[1] = points[9 * 2 + 1];
+            faceLeftBottom[0] = points[77 * 2];
+            faceLeftBottom[1] = points[77 * 2 + 1];
+
+            faceRightTop[0] = points[14 * 2];
+            faceRightTop[1] = points[14 * 2 + 1];
+            faceRightBottom[0] = points[95 * 2];
+            faceRightBottom[1] = points[95 * 2 + 1];
+
+            leftFaceControl[0] = points[66 * 2];
+            leftFaceControl[1] = points[66 * 2 + 1];
+            rightFaceControl[0] = points[49 * 2];
+            rightFaceControl[1] = points[49 * 2 + 1];
         }
 
         mLeftEyeFilter.setEye(leftLeftEye, leftRightEye);
@@ -180,6 +212,8 @@ public class SurfaceViewRender extends BaseGLRender {
         mRuddyRightFilter.setRuddy(ruddyRightLeft, ruddyRightRight);
         mEyeShadowLeftFilter.setEye(leftLeftEye, leftRightEye, leftEyeCenter);
         mEyeShadowRightFilter.setEye(rightLeftEye, rightRightEye, rightEyeCenter);
+        mFaceLeftFilter.setFace(faceLeftTop, faceLeftBottom, leftFaceControl);
+        mFaceRightFilter.setFace(faceRightTop, faceRightBottom, rightFaceControl);
     }
 
     public TextureWhiteFilter getInputWhiteFilter() {
@@ -220,5 +254,10 @@ public class SurfaceViewRender extends BaseGLRender {
 
     public TextureMouthFilter getMouthFilter() {
         return mMouthFilter;
+    }
+
+    public void setFaceScale(float scale) {
+        mFaceLeftFilter.setScale(scale);
+        mFaceRightFilter.setScale(scale);
     }
 }

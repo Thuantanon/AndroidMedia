@@ -56,6 +56,7 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
     private RecorderManager mRecorderManager;
     private MultiTypeRvAdapter mPcmAdapter;
     private MultiTypeRvAdapter mWavAdapter;
+    private MultiTypeRvAdapter mMp3Adapter;
 
     private SoundPool mSoundPool;
     private int mCurrentSoundId;
@@ -89,10 +90,18 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
         mWavAdapter.setAudioCallback(this);
         wavView.setAdapter(mWavAdapter);
 
+        RecyclerView mp3View = new RecyclerView(mContext);
+        mp3View.setLayoutManager(new LinearLayoutManager(mContext));
+        mMp3Adapter = new MultiTypeRvAdapter(mContext);
+        mMp3Adapter.setAudioCallback(this);
+        mp3View.setAdapter(mMp3Adapter);
+
         titles.add("pcm文件列表");
         titles.add("wav文件列表");
+        titles.add("mp3文件列表");
         pages.add(pcmView);
         pages.add(wavView);
+        pages.add(mp3View);
 
         CommonPagerAdapter pagerAdapter = new CommonPagerAdapter(pages, titles);
         mViewPager.setAdapter(pagerAdapter);
