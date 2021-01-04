@@ -15,7 +15,7 @@ import com.cxh.androidmedia.utils.FileUtil;
  * Time : 2018-09-26  11:18
  * Desc :
  */
-public class AudioPCMFileAdapterItem implements IAdapterViewItem<Object> {
+public class AudioMp3FileAdapterItem implements IAdapterViewItem<Object> {
 
     private Button mBtnPlay;
     private Button mBtnDelete;
@@ -24,7 +24,7 @@ public class AudioPCMFileAdapterItem implements IAdapterViewItem<Object> {
 
     private MultiTypeRvAdapter.AudioCallback mCallback;
 
-    public AudioPCMFileAdapterItem(MultiTypeRvAdapter.AudioCallback callback) {
+    public AudioMp3FileAdapterItem(MultiTypeRvAdapter.AudioCallback callback) {
         mCallback = callback;
     }
 
@@ -51,32 +51,16 @@ public class AudioPCMFileAdapterItem implements IAdapterViewItem<Object> {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null == mCallback) {
-                    return;
-                }
-
-                if (v == mBtnPlay) {
-                    mCallback.playPCM(entity);
-                }
-
-                if (v == mBtnDelete) {
+                if (v == mBtnDelete && null != mCallback) {
                     mCallback.delete(entity);
-                }
-
-                if (v == mBtnMkwav) {
-                    mCallback.makeWav(entity);
-                }
-
-                if (v == mBtnMp3) {
-                    mCallback.makeMp3(entity);
                 }
             }
         };
 
-        mBtnPlay.setOnClickListener(onClickListener);
         mBtnDelete.setOnClickListener(onClickListener);
-        mBtnMkwav.setOnClickListener(onClickListener);
-        mBtnMp3.setOnClickListener(onClickListener);
+        mBtnMkwav.setVisibility(View.GONE);
+        mBtnPlay.setVisibility(View.GONE);
+        mBtnMp3.setVisibility(View.GONE);
     }
 
 }

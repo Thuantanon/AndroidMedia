@@ -61,6 +61,14 @@
                         android:textSize="12sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_mkmp3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="制作Mp3"
+                        android:textColor="@color/colorBlack3"
+                        android:textSize="12sp" />
+
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_play"
                         android:layout_width="60dp"
                         android:layout_height="40dp"

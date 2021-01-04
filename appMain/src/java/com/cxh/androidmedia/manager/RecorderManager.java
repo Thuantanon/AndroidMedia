@@ -221,6 +221,7 @@ public class RecorderManager {
     }
 
 
+    // 这里偷懒不写代码了，就是读取wav文件头信息和数据，再用AudioTrack播放
     public synchronized void playWavFile(String wavFile){
 
         if (TextUtils.isEmpty(wavFile)) {

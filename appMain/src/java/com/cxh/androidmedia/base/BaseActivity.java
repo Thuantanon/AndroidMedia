@@ -1,5 +1,6 @@
 package com.cxh.androidmedia.base;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Unbinder mUnbinder;
     protected BaseActivity mContext;
     protected MyHander mHander;
+    protected ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,12 +169,28 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
 
-    public void errorFinish(Throwable t, String message){
-        if(null != t){
+    public void errorFinish(Throwable t, String message) {
+        if (null != t) {
             t.printStackTrace();
             message += " , " + t.toString();
         }
         ToastUtil.show(mContext, message);
         CCLog.i(message);
+    }
+
+    public void showProgressDialog(String message) {
+        closeProgressDialog();
+
+        mProgressDialog = new ProgressDialog(mContext);
+        mProgressDialog.setMessage(message);
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.show();
+    }
+
+    public void closeProgressDialog() {
+        if(null != mProgressDialog) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 }

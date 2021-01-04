@@ -9,6 +9,7 @@ public class AudioFileEntity {
 
     public static final int AUDIO_TYPE_PCM = 0;
     public static final int AUDIO_TYPE_WAV = 1;
+    public static final int AUDIO_TYPE_MP3 = 2;
 
     private String audioAbsolutePath;
     private String audioFileName;

@@ -1,7 +1,9 @@
 package com.cxh.androidmedia.activity;
 
+import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import com.cxh.androidmedia.utils.AsyncTask;
 import com.cxh.androidmedia.utils.FileUtil;
 import com.cxh.androidmedia.utils.ToastUtil;
 import com.cxh.androidmedia.utils.WAVUtil;
+import com.cxh.mp3lame.LameEngine;
 import com.google.android.material.tabs.TabLayout;
 
 import java.io.File;
@@ -149,6 +152,7 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
     private void loadFiles() {
         List<Object> pcmList = new ArrayList<>();
         List<Object> wavList = new ArrayList<>();
+        List<Object> mp3List = new ArrayList<>();
 
         File rootPath = new File(FileUtil.PATH_AUDIO);
         if (rootPath.isDirectory() && null != rootPath.listFiles()) {
@@ -160,12 +164,15 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
                     pcmList.add(new AudioFileEntity(f.getAbsolutePath(), f.getName()));
                 } else if (f.isFile() && f.getName().endsWith(".wav")) {
                     wavList.add(new AudioFileEntity(f.getAbsolutePath(), f.getName(), AudioFileEntity.AUDIO_TYPE_WAV));
+                } else if (f.isFile() && f.getName().endsWith(".mp3")) {
+                    mp3List.add(new AudioFileEntity(f.getAbsolutePath(), f.getName(), AudioFileEntity.AUDIO_TYPE_MP3));
                 }
             }
         }
 
         mPcmAdapter.setList(pcmList);
         mWavAdapter.setList(wavList);
+        mMp3Adapter.setList(mp3List);
     }
 
     @Override
@@ -251,7 +258,110 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
         }
     }
 
+    @Override
+    public void makeMp3(AudioFileEntity entity) {
+        String filePath = entity.getAudioAbsolutePath();
+        final File pcmFile = new File(filePath);
+        if (pcmFile.exists()) {
+            final File mp3File = new File(pcmFile.getParent(), pcmFile.getName().replace(".pcm", ".mp3"));
+            new AsyncTask<Boolean>() {
+
+                @Override
+                public void onStart() {
+                    super.onStart();
+                    showProgressDialog("正在制作mp3，请稍等...");
+                }
+
+                @Override
+                protected Boolean doWork() throws Exception {
+                    LameEngine.native_Init(RecorderManager.SIMPLE_RATE_IN_HZ, LameEngine.CHANNEL_MONO, LameEngine.BIT_RATE_16,
+                            LameEngine.QUALITY_HIGH);
+                    boolean result = LameEngine.native_Encoder(pcmFile.getAbsolutePath(), mp3File.getAbsolutePath());
+                    LameEngine.native_Release();
+
+                    return result;
+                }
+
+                @Override
+                protected void onSuccess(Boolean result) {
+                    if (result) {
+                        loadFiles();
+                        showToast("文件已保存到：" + mp3File.getAbsolutePath());
+                    } else {
+                        showToast("制作mp3失败");
+                    }
+                }
+
+                @Override
+                protected void onFailed(Exception e) {
+                    showToast("制作mp3失败 ： " + e.toString());
+                }
+
+                @Override
+                public void onFinish() {
+                    super.onFinish();
+                    closeProgressDialog();
+                }
+
+            }.execute();
+        }
+    }
+
     private void showToast(String message) {
         ToastUtil.show(mContext, message);
+    }
+
+    // MediaRecorder录制音频基本使用
+    private void userMediaRecorder() {
+
+        // start
+        MediaRecorder mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        // 必须在设置编码格式之前设置
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setOutputFile(FileUtil.PATH_AUDIO + File.separator + "test.amr");
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // stop
+        mediaRecorder.stop();
+        mediaRecorder.release();
+    }
+
+    // MediaRecorder录制视频基本使用
+    private void userVideoRecorder() {
+        // start
+        MediaRecorder mediaRecorder = new MediaRecorder();
+        // 设置视频源
+        // mediaRecorder.setInputSurface(Surface);
+        // mediaRecorder.setCamera(Camera);
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+        // 设置格式
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        // mediaRecorder.setAudioChannels(1);
+        // mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+        // mediaRecorder.setVideoFrameRate(30);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mediaRecorder.setOutputFile("path");
+        // 预览
+        // mediaRecorder.setPreviewDisplay(surface);
+
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // stop
+        mediaRecorder.stop();
+        mediaRecorder.release();
     }
 }

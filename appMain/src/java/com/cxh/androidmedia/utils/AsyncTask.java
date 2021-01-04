@@ -16,22 +16,50 @@ public abstract class AsyncTask<R> implements Runnable {
 
     protected abstract void onFailed(Exception e);
 
+    public void onStart() {
+
+    }
+
+    public void onFinish() {
+
+    }
+
     public void execute() {
         ThreadPoolManager.getInstance().execute(this);
     }
 
     @Override
     public void run() {
-        // 结果在主线
         Handler handler = new Handler(Looper.getMainLooper());
+        // 结果在主线
         handler.post(new Runnable() {
             @Override
             public void run() {
-                try {
-                    onSuccess(doWork());
-                } catch (Exception e) {
+                onStart();
+            }
+        });
+
+        try {
+            R result = doWork();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onSuccess(result);
+                }
+            });
+        } catch (Exception e) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
                     onFailed(e);
                 }
+            });
+        }
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                onFinish();
             }
         });
     }

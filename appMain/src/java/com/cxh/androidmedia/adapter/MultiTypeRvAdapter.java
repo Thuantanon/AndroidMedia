@@ -3,6 +3,7 @@ package com.cxh.androidmedia.adapter;
 import android.content.Context;
 
 import com.cxh.androidmedia.adapter.item.AcitivityAdapterItem;
+import com.cxh.androidmedia.adapter.item.AudioMp3FileAdapterItem;
 import com.cxh.androidmedia.adapter.item.AudioPCMFileAdapterItem;
 import com.cxh.androidmedia.adapter.item.AudioWavFileAdapterItem;
 import com.cxh.androidmedia.adapter.item.StringAdapterItem;
@@ -22,6 +23,7 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
     private static final int V_TYPE_ACTIVITY = 1;
     private static final int V_TYPE_AUDIO_PCM = 2;
     private static final int V_TYPE_AUDIO_WAV = 3;
+    private static final int V_TYPE_AUDIO_MP3 = 4;
 
     private AudioCallback mAudioCallback;
 
@@ -42,10 +44,12 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
             return V_TYPE_ACTIVITY;
         } else if (object instanceof AudioFileEntity) {
             AudioFileEntity entity = (AudioFileEntity) object;
-            if(entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_PCM) {
+            if (entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_PCM) {
                 return V_TYPE_AUDIO_PCM;
-            }else if(entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_WAV){
+            } else if (entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_WAV) {
                 return V_TYPE_AUDIO_WAV;
+            } else if (entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_MP3) {
+                return V_TYPE_AUDIO_MP3;
             }
         }
         return 0;
@@ -59,8 +63,10 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
             return new AcitivityAdapterItem(mContext);
         } else if (viewType == V_TYPE_AUDIO_PCM) {
             return new AudioPCMFileAdapterItem(mAudioCallback);
-        }else if(viewType == V_TYPE_AUDIO_WAV){
+        } else if (viewType == V_TYPE_AUDIO_WAV) {
             return new AudioWavFileAdapterItem(mAudioCallback);
+        } else if (viewType == V_TYPE_AUDIO_MP3) {
+            return new AudioMp3FileAdapterItem(mAudioCallback);
         }
         return new StringAdapterItem();
     }
@@ -68,9 +74,14 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
 
     public interface AudioCallback {
         void playPCM(AudioFileEntity entity);
+
         void playWav(AudioFileEntity entity);
+
         void delete(AudioFileEntity entity);
+
         void makeWav(AudioFileEntity entity);
+
+        void makeMp3(AudioFileEntity entity);
     }
 
 }
