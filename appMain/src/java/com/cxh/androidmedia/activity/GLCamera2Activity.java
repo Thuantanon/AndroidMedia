@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
-import com.cxh.androidmedia.presenter.Camera2PreviewPresenter;
 import com.cxh.androidmedia.render_old.BaseDrawable;
 import com.cxh.androidmedia.render_old.ClassicDrawRender;
 import com.cxh.androidmedia.render_old.IDrawableProvider;

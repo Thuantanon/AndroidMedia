@@ -37,7 +37,7 @@ proguard/
 
 # IDE file
 *.iml
-.idea/
+.idea
 .classpath
 .project
 *.eml

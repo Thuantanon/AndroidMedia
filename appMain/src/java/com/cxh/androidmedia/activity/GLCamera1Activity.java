@@ -154,7 +154,7 @@ public class GLCamera1Activity extends BaseActivity implements SurfaceHolder.Cal
             @Override
             public void run() {
                 mEGLHelper.initEGL(holder.getSurface());
-                mSurfaceViewRender.onSurfaceChanged(mEGLHelper.getGL(), width, height);
+                mSurfaceViewRender.onSurfaceChanged(null, width, height);
                 mCamera1Helper.setPreviewCallback(GLCamera1Activity.this);
                 mCamera1Helper.openCamera(mSurfaceViewRender.getSurfaceTexture());
             }
@@ -191,8 +191,8 @@ public class GLCamera1Activity extends BaseActivity implements SurfaceHolder.Cal
                 // 设置美颜相关参数
                 mSurfaceViewRender.setFacePoint(points);
 
-                mSurfaceViewRender.onDrawFrame(mEGLHelper.getGL());
-                mEGLHelper.swap();
+                mSurfaceViewRender.onDrawFrame(null);
+                mEGLHelper.swapBuffers();
             }
         });
     }

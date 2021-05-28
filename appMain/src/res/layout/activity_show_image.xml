@@ -26,7 +26,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
-            android:src="@drawable/beauty1"
+            android:src="@drawable/mylove"
             android:layout_marginTop="10dp"
             />
 
@@ -43,7 +43,7 @@
             android:layout_width="@dimen/image_size"
             android:layout_height="@dimen/image_size"
             android:layout_marginTop="10dp"
-            app:bv_drawable="@drawable/beauty2"
+            app:bv_drawable="@drawable/mylove"
             />
 
         <androidx.appcompat.widget.AppCompatTextView

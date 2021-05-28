@@ -21,6 +21,4 @@ Java_com_cxh_mp3lame_LameEngine_native_1Encoder(JNIEnv *env, jclass clazz, jstri
 extern "C" JNIEXPORT void JNICALL
 Java_com_cxh_mp3lame_LameEngine_native_1Release(JNIEnv *env, jclass clazz);
 
-
-
 #endif //ANDROIDMEDIA_LAME_ENGINE_H

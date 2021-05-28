@@ -29,8 +29,10 @@ Java_com_cxh_androidmedia_jni_OpenGLHelper_glDrawFrame(JNIEnv *env, jclass insta
 JNIEXPORT void JNICALL
 Java_com_cxh_androidmedia_jni_OpenGLHelper_glRelease(JNIEnv *env, jclass instance);
 
-}
+JNIEXPORT jbyteArray JNICALL
+Java_com_cxh_androidmedia_jni_OpenGLHelper_native_1readPixels(JNIEnv *env, jclass clazz, jint width, jint height);
 
+}
 
 
 #endif //ANDROIDMEDIA_JNI_GL_DRAW_H

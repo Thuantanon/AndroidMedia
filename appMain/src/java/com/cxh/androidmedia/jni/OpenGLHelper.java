@@ -41,4 +41,12 @@ public class OpenGLHelper {
      * 释放EGL
      */
     public static native void glRelease();
+
+    /**
+     *  Native读取像素
+     * @param width
+     * @param height
+     * @return
+     */
+    public static native byte[] native_readPixels(int width, int height);
 }

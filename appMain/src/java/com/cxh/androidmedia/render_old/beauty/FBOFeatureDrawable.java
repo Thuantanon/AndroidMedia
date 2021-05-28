@@ -115,7 +115,7 @@ public class FBOFeatureDrawable extends BaseFboDrawable {
         mTextureUnit = GLES30.glGetUniformLocation(mProgramSecond, "mTextureUnit");
 
         // 初始化FBO、纹理
-        mInputTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty1);
+        mInputTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.mylove);
         // FBO中要求绑定的对象与缓冲区宽高相同
         mOutputTexture = OpenGLUtils.createEmptyTexture(width, height);
 
@@ -156,8 +156,8 @@ public class FBOFeatureDrawable extends BaseFboDrawable {
         // 绘制三角形
         GLES30.glDrawElements(GLES30.GL_TRIANGLES, VERTEX_ARRAY.length, GLES30.GL_UNSIGNED_SHORT, BitsUtil.arraysToBuffer(VERTEX_INDEX));
 
-        GLES30.glEnableVertexAttribArray(mVertexLocationFirst);
-        GLES30.glEnableVertexAttribArray(mTextureLocationFirst);
+        GLES30.glDisableVertexAttribArray(mVertexLocationFirst);
+        GLES30.glDisableVertexAttribArray(mTextureLocationFirst);
         GLES30.glUseProgram(0);
         GLES30.glBindFramebuffer(GLES30.GL_FRAMEBUFFER, 0);
 

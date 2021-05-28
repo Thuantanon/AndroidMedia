@@ -83,7 +83,7 @@ public class BitmapTextureView extends TextureView implements TextureView.Surfac
 
     private void drawCanvas(Canvas canvas) {
         if (null == mBitmapImage) {
-            Bitmap sourceImage = BitmapFactory.decodeResource(getResources(), R.drawable.beauty4);
+            Bitmap sourceImage = BitmapFactory.decodeResource(getResources(), R.drawable.mylove);
             mBitmapImage = createBitmap(sourceImage, mSurfaceWidth, mSurfaceHeight);
         }
         canvas.drawBitmap(mBitmapImage, 0, 0, null);

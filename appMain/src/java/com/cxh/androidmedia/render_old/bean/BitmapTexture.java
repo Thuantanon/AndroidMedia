@@ -1,6 +1,9 @@
 package com.cxh.androidmedia.render_old.bean;
 
+import android.opengl.GLES30;
+
 import com.cxh.androidmedia.utils.CCLog;
+import com.cxh.androidmedia.utils.OpenGLUtils;
 
 /**
  * Created by Cxh
@@ -9,9 +12,9 @@ import com.cxh.androidmedia.utils.CCLog;
  */
 public class BitmapTexture {
 
-    public int mTextureId;
-    public float mBitmapWidth;
-    public float mBitmapHeight;
+    public int mTextureId = OpenGLUtils.NO_TEXTURE;
+    public int mBitmapWidth;
+    public int mBitmapHeight;
     // x,y方向的缩放
     public float mVertexScaleX;
     public float mVertexScaleY;
@@ -35,6 +38,13 @@ public class BitmapTexture {
         } else {
             mVertexScaleX = 1f / bitmapRate;
             mVertexScaleY = 1f;
+        }
+    }
+
+    public void release() {
+        if (OpenGLUtils.NO_TEXTURE != mTextureId) {
+            GLES30.glDeleteTextures(1, new int[]{mTextureId}, 0);
+            mTextureId = OpenGLUtils.NO_TEXTURE;
         }
     }
 }

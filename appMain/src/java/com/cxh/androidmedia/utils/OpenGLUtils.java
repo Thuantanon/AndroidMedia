@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES30;
-import android.opengl.GLES30;
 import android.opengl.GLUtils;
 
 import androidx.annotation.DrawableRes;
@@ -18,6 +17,8 @@ import com.cxh.androidmedia.render_old.bean.BitmapTexture;
  * Desc :
  */
 public class OpenGLUtils {
+
+    public static final int NO_TEXTURE = -1;
 
     public static int loadShader(int type, String shaderCode) {
         // 根据type创建顶点着色器或片元着色器
@@ -63,21 +64,18 @@ public class OpenGLUtils {
         return programId;
     }
 
+
     public static BitmapTexture loadTexture(Context context, @DrawableRes int drawable) {
+        return loadTexture(BitmapFactory.decodeResource(context.getResources(), drawable));
+    }
+
+    public static BitmapTexture loadTexture(Bitmap bitmap) {
         final int[] texture = new int[1];
         BitmapTexture bitmapTexture = new BitmapTexture();
         //创建一个纹理对象
         GLES30.glGenTextures(1, texture, 0);
         if (texture[0] <= 0) {
             CCLog.i("load texture failed...");
-            return bitmapTexture;
-        }
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable, options);
-        if (null == bitmap) {
-            CCLog.i("decode bitmap failed...");
             return bitmapTexture;
         }
 
@@ -240,5 +238,9 @@ public class OpenGLUtils {
         }
         int location = GLES30.glGetUniformLocation(programId, name);
         GLES30.glUniform2fv(location, 1, value, 0);
+    }
+
+    public static void checkGLError() {
+        CCLog.i("checkGLError, code: " + GLES30.glGetError());
     }
 }

@@ -89,7 +89,7 @@ public class ImageDrawable extends BaseDrawable {
 
         printLog(mGLProgram);
 
-        mBitmapTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty5);
+        mBitmapTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty);
     }
 
     @Override

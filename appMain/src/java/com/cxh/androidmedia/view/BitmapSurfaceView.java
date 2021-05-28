@@ -109,7 +109,7 @@ public class BitmapSurfaceView extends SurfaceView implements SurfaceHolder.Call
 
     private void drawCanvas(Canvas canvas) {
         if (null == mBitmapImage) {
-            Bitmap sourceImage = BitmapFactory.decodeResource(getResources(), R.drawable.beauty3);
+            Bitmap sourceImage = BitmapFactory.decodeResource(getResources(), R.drawable.mylove);
             mBitmapImage = createBitmap(sourceImage, mSurfaceWidth, mSurfaceHeight);
         }
         canvas.drawBitmap(mBitmapImage, 0, 0, null);

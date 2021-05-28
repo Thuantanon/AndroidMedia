@@ -67,7 +67,7 @@ public class DeformCanvasDrawable extends BaseDrawable {
         GLES30.glDeleteShader(vertexShader);
         GLES30.glDeleteShader(fragShader);
 
-        mBgTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.beauty5);
+        mBgTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.mylove);
         mWaterTexture = OpenGLUtils.loadTexture(AMApp.get(), R.drawable.watermartk);
     }
 
