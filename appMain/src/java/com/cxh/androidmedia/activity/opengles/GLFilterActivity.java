@@ -1,4 +1,4 @@
-package com.cxh.androidmedia.activity;
+package com.cxh.androidmedia.activity.opengles;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

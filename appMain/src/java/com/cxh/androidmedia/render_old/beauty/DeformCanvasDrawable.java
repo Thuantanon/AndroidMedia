@@ -11,7 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 
 import com.cxh.androidmedia.R;
-import com.cxh.androidmedia.activity.GLFilterActivity;
+import com.cxh.androidmedia.activity.opengles.GLFilterActivity;
 import com.cxh.androidmedia.base.AMApp;
 import com.cxh.androidmedia.render_old.BaseDrawable;
 import com.cxh.androidmedia.render_old.bean.BitmapTexture;

@@ -1,4 +1,4 @@
-package com.cxh.androidmedia.activity;
+package com.cxh.androidmedia.activity.opengles;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;

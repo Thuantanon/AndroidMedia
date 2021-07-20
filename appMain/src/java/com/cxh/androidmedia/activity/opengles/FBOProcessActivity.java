@@ -1,4 +1,4 @@
-package com.cxh.androidmedia.activity;
+package com.cxh.androidmedia.activity.opengles;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

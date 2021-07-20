@@ -38,6 +38,17 @@
             android:name="android.max_aspect"
             android:value="2.5" /> <!-- AppID -->
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"
+                />
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask"
@@ -51,7 +62,7 @@
         </activity>
 
         <activity
-            android:name=".activity.ShowImageActivity"
+            android:name=".activity.opengles.ShowImageActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
@@ -61,52 +72,52 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.VideoRecorderActivity"
+            android:name=".activity.mediacodec.Camera1RecorderActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLRenderActivity"
+            android:name=".activity.opengles.GLRenderActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLFilterActivity"
+            android:name=".activity.opengles.GLFilterActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLCamera1Activity"
+            android:name=".activity.opengles.GLCamera1Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLFeatureActivity"
+            android:name=".activity.opengles.GLFeatureActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.GLCamera2Activity"
+            android:name=".activity.opengles.GLCamera2Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.MediaCodec1Activity"
+            android:name=".activity.mediacodec.MediaCodec1Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.MediaCodec2Activity"
+            android:name=".activity.mediacodec.MediaCodec2Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.MediaCodec3Activity"
+            android:name=".activity.mediacodec.MediaCodec3Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.MediaCodec4Activity"
+            android:name=".activity.mediacodec.MediaCodec4Activity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
 
@@ -141,7 +152,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.FBOProcessActivity"
+            android:name=".activity.opengles.FBOProcessActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.mediacodec.Camera2RecorderActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
     </application>

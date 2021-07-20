@@ -1,7 +1,6 @@
 package com.cxh.androidmedia;
 
 import android.Manifest;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -10,31 +9,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.cxh.androidmedia.activity.AudioRecordActivity;
-import com.cxh.androidmedia.activity.FBOProcessActivity;
-import com.cxh.androidmedia.activity.GLCamera1Activity;
-import com.cxh.androidmedia.activity.GLRenderActivity;
-import com.cxh.androidmedia.activity.GLFilterActivity;
-import com.cxh.androidmedia.activity.GLFeatureActivity;
-import com.cxh.androidmedia.activity.GLCamera2Activity;
-import com.cxh.androidmedia.activity.MediaCodec1Activity;
-import com.cxh.androidmedia.activity.MediaCodec2Activity;
-import com.cxh.androidmedia.activity.MediaCodec3Activity;
-import com.cxh.androidmedia.activity.MediaCodec4Activity;
-import com.cxh.androidmedia.activity.MediaFFmpegActivity;
-import com.cxh.androidmedia.activity.MediaIjkPlayerActivity;
-import com.cxh.androidmedia.activity.MediaLibrtmpActivity;
-import com.cxh.androidmedia.activity.MediaMainActivity;
-import com.cxh.androidmedia.activity.MediaProtocolActivity;
-import com.cxh.androidmedia.activity.MediaX264Activity;
-import com.cxh.androidmedia.activity.ShowImageActivity;
-import com.cxh.androidmedia.activity.VideoRecorderActivity;
+import com.cxh.androidmedia.activity.mediacodec.Camera1RecorderActivity;
+import com.cxh.androidmedia.activity.mediacodec.Camera2RecorderActivity;
+import com.cxh.androidmedia.activity.opengles.FBOProcessActivity;
+import com.cxh.androidmedia.activity.opengles.GLCamera1Activity;
+import com.cxh.androidmedia.activity.opengles.GLRenderActivity;
+import com.cxh.androidmedia.activity.opengles.GLFilterActivity;
+import com.cxh.androidmedia.activity.opengles.GLFeatureActivity;
+import com.cxh.androidmedia.activity.opengles.GLCamera2Activity;
+import com.cxh.androidmedia.activity.mediacodec.MediaCodec1Activity;
+import com.cxh.androidmedia.activity.opengles.ShowImageActivity;
 import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
 import com.cxh.androidmedia.base.BaseActivity;
 import com.cxh.androidmedia.beans.ActivityBean;
 import com.cxh.androidmedia.common.CommonPagerAdapter;
-import com.cxh.androidmedia.utils.CCLog;
 import com.cxh.androidmedia.utils.ToastUtil;
-import com.cxh.mp3lame.LameEngine;
 import com.google.android.material.tabs.TabLayout;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -124,6 +113,8 @@ public class MainActivity extends BaseActivity {
         mTabLayout.setupWithViewPager(mViewPager);
 
         addPages();
+
+        mViewPager.setCurrentItem(1);
     }
 
     private void addPages() {
@@ -139,17 +130,18 @@ public class MainActivity extends BaseActivity {
 
         List<Object> pages2 = new ArrayList<>();
         pages2.add(new ActivityBean("音频录制、播放，wav、mp3读写", AudioRecordActivity.class));
-        pages2.add(new ActivityBean("视频预览，获取NV21数据", VideoRecorderActivity.class));
+        pages2.add(new ActivityBean("Camera1拍照、VideoRecorder录像", Camera1RecorderActivity.class));
+        pages2.add(new ActivityBean("Camera2拍照、VideoRecorder录像", Camera2RecorderActivity.class));
         pages2.add(new ActivityBean("MediaCodec解析、封装Mp4文件", MediaCodec1Activity.class));
-        pages2.add(new ActivityBean("MediaCodec硬编、硬解AAC和H264", MediaCodec2Activity.class));
-        pages2.add(new ActivityBean("音视频采集、编码、封装Mp4文件", MediaCodec3Activity.class));
-        pages2.add(new ActivityBean("Mp4文件解析、解码、播放、渲染", MediaCodec4Activity.class));
-        pages2.add(new ActivityBean("网络协议rtmp、封包格式FLV、MP4等", MediaProtocolActivity.class));
-        pages2.add(new ActivityBean("学习开源项目ijkplayer", MediaIjkPlayerActivity.class));
-        pages2.add(new ActivityBean("移植ffmpeg，实现简易播放器", MediaFFmpegActivity.class));
-        pages2.add(new ActivityBean("移植x264，实现H264软编码", MediaX264Activity.class));
-        pages2.add(new ActivityBean("移植librtmp，实现rtmp推流功能", MediaLibrtmpActivity.class));
-        pages2.add(new ActivityBean("做一款短视频APP，仿抖音", MediaMainActivity.class));
+//        pages2.add(new ActivityBean("MediaCodec硬编、硬解AAC和H264", MediaCodec2Activity.class));
+//        pages2.add(new ActivityBean("音视频采集、编码、封装Mp4文件", MediaCodec3Activity.class));
+//        pages2.add(new ActivityBean("Mp4文件解析、解码、播放、渲染", MediaCodec4Activity.class));
+//        pages2.add(new ActivityBean("网络协议rtmp、封包格式FLV、MP4等", MediaProtocolActivity.class));
+//        pages2.add(new ActivityBean("学习开源项目ijkplayer", MediaIjkPlayerActivity.class));
+//        pages2.add(new ActivityBean("移植ffmpeg，实现简易播放器", MediaFFmpegActivity.class));
+//        pages2.add(new ActivityBean("移植x264，实现H264软编码", MediaX264Activity.class));
+//        pages2.add(new ActivityBean("移植librtmp，实现rtmp推流功能", MediaLibrtmpActivity.class));
+//        pages2.add(new ActivityBean("做一款短视频APP，仿抖音", MediaMainActivity.class));
         mAdapter2.setList(pages2);
     }
 }

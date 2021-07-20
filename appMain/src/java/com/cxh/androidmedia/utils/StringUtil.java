@@ -21,4 +21,20 @@ public class StringUtil {
         CCLog.i(sb.toString());
     }
 
+    public static <T> String toString(T[] arr) {
+        if (null == arr || arr.length <= 0) {
+            return "null";
+        }
+
+        StringBuilder sb = new StringBuilder()
+                .append("[");
+        for (int i = 0; i < arr.length; i++) {
+            sb.append(arr[i].toString());
+            if (i != arr.length - 1) {
+                sb.append(", ");
+            }
+        }
+
+        return sb.append("]").toString();
+    }
 }

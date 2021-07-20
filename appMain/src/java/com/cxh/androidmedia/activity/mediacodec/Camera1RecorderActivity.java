@@ -1,8 +1,15 @@
-package com.cxh.androidmedia.activity;
+package com.cxh.androidmedia.activity.mediacodec;
 
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,6 +21,7 @@ import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
 import com.cxh.androidmedia.utils.CCLog;
 import com.cxh.androidmedia.utils.FileUtil;
+import com.cxh.androidmedia.utils.MediaStoreUtil;
 import com.cxh.androidmedia.utils.ToastUtil;
 
 import java.io.File;
@@ -26,9 +34,9 @@ import butterknife.OnClick;
 /**
  * Created by Cxh
  * Time : 2019-02-27  00:20
- * Desc :
+ * Desc :  Camera API已经废弃，录制视屏后面由Camera2 API完成
  */
-public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder.Callback, Camera.PreviewCallback {
+public class Camera1RecorderActivity extends BaseActivity implements SurfaceHolder.Callback, Camera.PreviewCallback {
 
     public static final int MSG_REFRESH_FOCUS = 0;
     public static final int MSG_TAKE_PHOTO = 1;
@@ -38,19 +46,28 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
     SurfaceView mSurfaceView;
     @BindView(R.id.tv_switch)
     TextView mTvSwitch;
+    @BindView(R.id.tv_video_record)
+    TextView mTvRecord;
 
+    private Handler mControlHandler;
+    private Handler mSaveHandler;
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
+    private MediaRecorder mMediaRecorder;
+    private String mVideoPath;
+    private String mVideoFilename;
+
     private int mCameraCount;
     private boolean mSurfaceActive;
     private boolean mFaceCamera;
 
     private boolean mTakePhoto;
+    private boolean mIsRecoding;
 
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_video_recorde;
+        return R.layout.activity_camera_video_recorde;
     }
 
     @Override
@@ -59,6 +76,14 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
             ToastUtil.show(mContext, "该设备不支持相机");
             finish();
         }
+
+        HandlerThread handlerThread = new HandlerThread("Camera Hal Control");
+        handlerThread.start();
+        mControlHandler = new Handler(handlerThread.getLooper());
+
+        HandlerThread saveHandlerThread = new HandlerThread("Save Media");
+        saveHandlerThread.start();
+        mSaveHandler = new Handler(saveHandlerThread.getLooper());
 
         mSurfaceView.setKeepScreenOn(true);
         mSurfaceHolder = mSurfaceView.getHolder();
@@ -92,27 +117,55 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
         if (null != mSurfaceHolder) {
             mSurfaceHolder.removeCallback(this);
         }
+
+        if (null != mControlHandler) {
+            mControlHandler.getLooper().quitSafely();
+            mControlHandler = null;
+        }
+
+        if (null != mSaveHandler) {
+            mSaveHandler.getLooper().quitSafely();
+            mSaveHandler = null;
+        }
     }
 
     @Override
-    @OnClick({R.id.tv_capture, R.id.tv_video_start, R.id.tv_video_end, R.id.tv_switch})
+    @OnClick({R.id.tv_capture, R.id.tv_video_record, R.id.tv_switch})
     public void onViewClick(View view) {
         super.onViewClick(view);
         switch (view.getId()) {
             case R.id.tv_capture: {
                 mTakePhoto = true;
+
+                mControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        takePicture();
+                    }
+                });
             }
             break;
-            case R.id.tv_video_start: {
-
-            }
-            break;
-            case R.id.tv_video_end: {
-
+            case R.id.tv_video_record: {
+                mSaveHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mIsRecoding) {
+                            stopRecordVideo();
+                        } else {
+                            startRecordVideo();
+                        }
+                    }
+                });
             }
             break;
             case R.id.tv_switch: {
-                switchCamera();
+
+                mControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        switchCamera();
+                    }
+                });
             }
             break;
         }
@@ -142,13 +195,34 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        initCamera(holder);
+
+        mControlHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                initCamera(holder);
+            }
+        });
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         mSurfaceActive = false;
-        releaseCamera();
+
+        if (mIsRecoding) {
+            mSaveHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    stopRecordVideo();
+                }
+            });
+        }
+
+        mControlHandler.postAtFrontOfQueue(new Runnable() {
+            @Override
+            public void run() {
+                releaseCamera();
+            }
+        });
     }
 
     @Override
@@ -157,9 +231,9 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
         // CCLog.i("data : " + data.length);
 
         if (mTakePhoto) {
-            Camera.Size size = camera.getParameters().getPreviewSize();
-            takePhoto(data, size.width, size.height);
-            mTakePhoto = false;
+//            Camera.Size size = camera.getParameters().getPreviewSize();
+//            takePhoto(data, size.width, size.height);
+//            mTakePhoto = false;
         }
     }
 
@@ -305,5 +379,159 @@ public class VideoRecorderActivity extends BaseActivity implements SurfaceHolder
             sb.insert(0, "图片已保存至：");
             ToastUtil.show(mContext, sb.toString());
         }
+    }
+
+    private void takePicture() {
+        if (null != mCamera) {
+            mCamera.takePicture(new Camera.ShutterCallback() {
+                @Override
+                public void onShutter() {
+                    CCLog.i("onShutter");
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    CCLog.i("onPictureTaken, raw data received");
+                }
+            }, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    CCLog.i("onPictureTaken, jpeg data received");
+                    mTakePhoto = false;
+                    mCamera.startPreview();
+
+                    mSaveHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            StringBuilder sb = new StringBuilder(FileUtil.PATH_IMAGE_PHOTO);
+                            sb.append(File.separator);
+                            sb.append("camera1_take_picture_");
+                            sb.append(System.currentTimeMillis());
+                            sb.append(".jpg");
+
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                            Matrix matrix = new Matrix();
+                            if (mFaceCamera) {
+                                matrix.setRotate(270);
+                            } else {
+                                matrix.setRotate(90);
+                            }
+                            Bitmap targetBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+                            bitmap.recycle();
+                            FileUtil.saveBitmapToStorage(targetBmp, sb.toString());
+
+                            ToastUtil.show(mContext, "图片已保存至：" + sb.toString());
+                            MediaStoreUtil.saveImageToMediaStore(mContext, sb.toString(), sb.toString().replace("FileUtil.PATH_IMAGE_PHOTO", ""),
+                                    "Camera1拍照");
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void startRecordVideo() {
+        mIsRecoding = true;
+        mCamera.stopPreview();//暂停相机预览
+
+        mVideoFilename = "camera1_video_recorder_" + System.currentTimeMillis() + ".mp4";
+        mVideoPath = FileUtil.PATH_VIDEO + File.separator + mVideoFilename;
+
+        try {
+            mCamera.unlock();
+            // start
+            MediaRecorder mediaRecorder = new MediaRecorder();
+            // 设置视频源
+            // mediaRecorder.setInputSurface(Surface);
+            mediaRecorder.setCamera(mCamera);
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            // 设置格式
+            // Android2.2以上使用Profile
+            // mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+            // mediaRecorder.setAudioChannels(1);
+            // mediaRecorder.setAudioSamplingRate(44100);
+            // mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
+            // mediaRecorder.setVideoFrameRate(30);
+            // mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+            mediaRecorder.setOrientationHint(90);
+            CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+            mediaRecorder.setProfile(profile);
+
+            mediaRecorder.setOutputFile(mVideoPath);
+            // 预览
+            mediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
+
+            mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+                @Override
+                public void onInfo(MediaRecorder mr, int what, int extra) {
+                    CCLog.i("MediaRecorder.onInfo, what: " + what);
+                }
+            });
+            mediaRecorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
+                @Override
+                public void onError(MediaRecorder mr, int what, int extra) {
+                    CCLog.i("MediaRecorder.onError, what: " + what);
+                    stopRecordVideo();
+                }
+            });
+
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mIsRecoding = true;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTvRecord.setText("视频录制中...");
+            }
+        });
+    }
+
+    private void stopRecordVideo() {
+        mIsRecoding = false;
+        try {
+            mCamera.lock();
+            mCamera.setPreviewDisplay(mSurfaceHolder);
+            mCamera.startPreview();
+
+            if (null != mMediaRecorder) {
+                mMediaRecorder.stop();
+                mMediaRecorder.reset();
+                mMediaRecorder.release();
+                mMediaRecorder = null;
+            }
+
+            final File file = new File(mVideoPath);
+            if (file.exists()) {
+                MediaStoreUtil.saveVideoToMediaStore(mContext, mVideoPath, "Camera1录制");
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (file.exists()) {
+                        ToastUtil.show(mContext, "视频已保存至：" + mVideoPath);
+                    } else {
+                        ToastUtil.show(mContext, "录制失败");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTvRecord.setText("点击录制视频");
+            }
+        });
     }
 }

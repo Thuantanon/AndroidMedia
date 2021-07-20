@@ -7,10 +7,13 @@ import com.cxh.androidmedia.adapter.item.AudioMp3FileAdapterItem;
 import com.cxh.androidmedia.adapter.item.AudioPCMFileAdapterItem;
 import com.cxh.androidmedia.adapter.item.AudioWavFileAdapterItem;
 import com.cxh.androidmedia.adapter.item.StringAdapterItem;
+import com.cxh.androidmedia.adapter.item.VideoFileItem;
 import com.cxh.androidmedia.beans.ActivityBean;
 import com.cxh.androidmedia.beans.AudioFileEntity;
 import com.cxh.androidmedia.common.CommonBaseRvAdapter;
 import com.cxh.androidmedia.common.IAdapterViewItem;
+
+import java.io.File;
 
 /**
  * Created by Cxh
@@ -24,11 +27,17 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
     private static final int V_TYPE_AUDIO_PCM = 2;
     private static final int V_TYPE_AUDIO_WAV = 3;
     private static final int V_TYPE_AUDIO_MP3 = 4;
+    private static final int V_TYPE_VIDEO = 5;
 
     private AudioCallback mAudioCallback;
+    private VideoCallback mVideoCallback;
 
     public void setAudioCallback(AudioCallback audioCallback) {
         mAudioCallback = audioCallback;
+    }
+
+    public void setVideoCallback(VideoCallback videoCallback) {
+        mVideoCallback = videoCallback;
     }
 
     public MultiTypeRvAdapter(Context context) {
@@ -51,7 +60,10 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
             } else if (entity.getAudioType() == AudioFileEntity.AUDIO_TYPE_MP3) {
                 return V_TYPE_AUDIO_MP3;
             }
+        } else if (object instanceof File) {
+            return V_TYPE_VIDEO;
         }
+
         return 0;
     }
 
@@ -67,7 +79,10 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
             return new AudioWavFileAdapterItem(mAudioCallback);
         } else if (viewType == V_TYPE_AUDIO_MP3) {
             return new AudioMp3FileAdapterItem(mAudioCallback);
+        } else if (viewType == V_TYPE_VIDEO) {
+            return new VideoFileItem(mVideoCallback);
         }
+
         return new StringAdapterItem();
     }
 
@@ -84,4 +99,11 @@ public class MultiTypeRvAdapter extends CommonBaseRvAdapter<Object> {
         void makeMp3(AudioFileEntity entity);
     }
 
+    public interface VideoCallback {
+        void delete(File f);
+
+        void play(File f);
+
+        void selected(File file);
+    }
 }

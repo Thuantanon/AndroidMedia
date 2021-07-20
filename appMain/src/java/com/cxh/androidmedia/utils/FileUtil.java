@@ -46,42 +46,20 @@ public class FileUtil {
     public static final String PATH_IMAGE_SHOT = PATH_IMAGE + File.separator + "screenshot";
     // 拍照
     public static final String PATH_IMAGE_PHOTO = PATH_IMAGE + File.separator + "photo";
+    // 视频缓存目录
+    public static final String PATH_VIDEO_CACHE = PATH_VIDEO + File.separator + "cache";
     // Face
     public static final String PATH_FACE = "FaceModel";
     // 人脸模型
     public static String PATH_FACE_MODELS = "";
 
     static {
-
-        File fileRoot = new File(ROOT_PATH);
-        if (!fileRoot.exists() || !fileRoot.isDirectory()) {
-            boolean result = fileRoot.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, fileRoot.getAbsoluteFile()));
-        }
-
-        File audioDir = new File(PATH_AUDIO);
-        if (!audioDir.exists() || !audioDir.isDirectory()) {
-            boolean result = audioDir.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, audioDir.getAbsoluteFile()));
-        }
-
-        File videoDir = new File(PATH_VIDEO);
-        if (!videoDir.exists() || !videoDir.isDirectory()) {
-            boolean result = videoDir.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, videoDir.getAbsoluteFile()));
-        }
-
-        File imageShotDir = new File(PATH_IMAGE_SHOT);
-        if (!imageShotDir.exists() || !imageShotDir.isDirectory()) {
-            boolean result = imageShotDir.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, imageShotDir.getAbsoluteFile()));
-        }
-
-        File imagePhotoDir = new File(PATH_IMAGE_PHOTO);
-        if (!imagePhotoDir.exists() || !imagePhotoDir.isDirectory()) {
-            boolean result = imagePhotoDir.mkdirs();
-            CCLog.i(String.format("init dir %s result = " + result, imagePhotoDir.getAbsoluteFile()));
-        }
+        checkMediaDir(ROOT_PATH);
+        checkMediaDir(PATH_AUDIO);
+        checkMediaDir(PATH_VIDEO);
+        checkMediaDir(PATH_IMAGE_SHOT);
+        checkMediaDir(PATH_IMAGE_PHOTO);
+        checkMediaDir(PATH_VIDEO_CACHE);
 
         PATH_FACE_MODELS = ROOT_PATH + File.separator + PATH_FACE;
     }
@@ -98,9 +76,17 @@ public class FileUtil {
                 rootDir = AMApp.get().getFilesDir().getAbsolutePath();
             }
         } else {
-            rootDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+            rootDir = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "AndroidMedia";
         }
         return rootDir;
+    }
+
+    public static void checkMediaDir(String path) {
+        File filePath = new File(path);
+        if (!filePath.exists() || !filePath.isDirectory()) {
+            boolean result = filePath.mkdirs();
+            CCLog.i(String.format("init dir %s result = " + result, filePath.getAbsoluteFile()));
+        }
     }
 
     public static String getRandomPCMFile() {
@@ -226,14 +212,21 @@ public class FileUtil {
         return false;
     }
 
-    public static void saveBitmapToStorage(int[] data, int width, int height, String path) {
-        Bitmap bitmap = null;
+    public static void saveByteArrayToStorage(byte[] data, String path) {
+        FileOutputStream fileOutputStream = null;
         try {
-            bitmap = Bitmap.createBitmap(data, width, height, Bitmap.Config.ARGB_8888);
-            saveBitmapToStorage(bitmap, path);
+            fileOutputStream = new FileOutputStream(path);
+            fileOutputStream.write(data);
+            fileOutputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            if (null != bitmap) {
-                bitmap.recycle();
+            if (null != fileOutputStream) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

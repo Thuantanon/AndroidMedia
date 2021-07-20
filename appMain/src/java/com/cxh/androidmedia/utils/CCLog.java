@@ -1,5 +1,6 @@
 package com.cxh.androidmedia.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -13,5 +14,9 @@ public class CCLog {
 
     public static void i(String message) {
         Log.i(TAG, message);
+    }
+
+    public static void i(String tag, String message) {
+        Log.i(tag, message);
     }
 }

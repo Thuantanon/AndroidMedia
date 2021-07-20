@@ -1,4 +1,4 @@
-package com.cxh.androidmedia.activity;
+package com.cxh.androidmedia.activity.mediacodec;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.base.BaseActivity;
@@ -6,14 +6,14 @@ import com.cxh.androidmedia.base.BaseActivity;
 /**
  * Created by Cxh
  * Time : 2020-05-28  00:17
- * Desc : 采集、编码、封包Mp4，实现自定义摄像机
+ * Desc : MediaCodec实现音频AAC、视频H264的编解码
  */
-public class MediaCodec4Activity extends BaseActivity {
+public class MediaCodec2Activity extends BaseActivity {
 
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_mediacodec_4;
+        return R.layout.activity_mediacodec_2;
     }
 
     @Override
