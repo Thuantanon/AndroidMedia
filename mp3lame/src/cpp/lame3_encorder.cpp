@@ -4,8 +4,7 @@
 
 
 #include "lame3_encorder.h"
-#include "stdio.h"
-
+#include "android/log.h"
 
 void init_encoder(int sampleRate, int channels, int brate, int quality)
 {
@@ -47,29 +46,66 @@ bool encode(const char *pcmFilePath, const char *mp3FilePath)
         return false;
     }
 
+    int channelCount = lame_get_num_channels(lame_instance);
+    if (channelCount > 2)
+    {
+        fclose(pcmFile);
+        fclose(mp3OutputFile);
+        return false;
+    }
+
     // start
-    int read = 0;
-    int write = 0;
+    int readSize;
+    int writeSize;
     int total = 0;
     const int buffer_size = 8 * 1024;
-    short wavBuffer[buffer_size];
+    const int pcmShortSize = buffer_size / 2;
+    short pcmBuffer[pcmShortSize];
+    short pcmBufferL[pcmShortSize / 2];
+    short pcmBufferR[pcmShortSize / 2];
     unsigned char mp3Buffer[buffer_size];
 
     do
     {
-        read = static_cast<int>(fread(wavBuffer, sizeof(short int), buffer_size, pcmFile));
-        total += read * sizeof(short int);
-        if (read != 0)
+        readSize = static_cast<int>(fread(pcmBuffer, sizeof(short int), buffer_size / 2, pcmFile));
+        total += readSize * sizeof(short int);
+
+        if (channelCount == 1)
         {
-            write = lame_encode_buffer(lame_instance, wavBuffer, nullptr, read, mp3Buffer, buffer_size);
-        } else
+            // 单声道
+            if (readSize > 0)
+            {
+                writeSize = lame_encode_buffer(lame_instance, pcmBuffer, nullptr, readSize, mp3Buffer, buffer_size);
+            } else
+            {
+                writeSize = lame_encode_flush(lame_instance, mp3Buffer, buffer_size);
+            }
+        } else if (channelCount == 2)
         {
-            write = lame_encode_flush(lame_instance, mp3Buffer, buffer_size);
+            // 交换左右声道
+            for (int i = 0; i < readSize; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    pcmBufferL[i / 2] = pcmBuffer[i];
+                } else
+                {
+                    pcmBufferR[i / 2] = pcmBuffer[i];
+                }
+            }
+
+            if (readSize > 0)
+            {
+                writeSize = lame_encode_buffer(lame_instance, pcmBufferL, pcmBufferR, readSize / 2, mp3Buffer, buffer_size);
+            } else
+            {
+                writeSize = lame_encode_flush(lame_instance, mp3Buffer, buffer_size);
+            }
         }
 
-        fwrite(mp3Buffer, 1, static_cast<size_t>(write), mp3OutputFile);
+        fwrite(mp3Buffer, 1, static_cast<size_t>(writeSize), mp3OutputFile);
 
-    } while (read != 0);
+    } while (readSize != 0);
 
     // 写入Xing VBR/INFO标签
     lame_mp3_tags_fid(lame_instance, mp3OutputFile);

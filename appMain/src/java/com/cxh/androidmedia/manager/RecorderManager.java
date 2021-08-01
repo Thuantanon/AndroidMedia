@@ -129,7 +129,7 @@ public class RecorderManager {
         Runnable recordTask = new Runnable() {
             @Override
             public void run() {
-                File file = new File(FileUtil.getRandomPCMFile());
+                File file = new File(FileUtil.PATH_AUDIO_PCM, FileUtil.getRandomPCMFile());
                 FileOutputStream fileOutputStream = null;
                 BufferedOutputStream bufferedOutputStream = null;
                 DataOutputStream dataOutputStream = null;

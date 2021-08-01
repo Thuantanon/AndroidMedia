@@ -20,6 +20,7 @@ public class AudioWavFileAdapterItem implements IAdapterViewItem<Object> {
     private Button mBtnPlay;
     private Button mBtnDelete;
     private Button mBtnMkwav;
+    private Button mBtnMp3;
 
     private MultiTypeRvAdapter.AudioCallback mCallback;
 
@@ -37,6 +38,7 @@ public class AudioWavFileAdapterItem implements IAdapterViewItem<Object> {
         mBtnPlay = holder.findViewById(R.id.btn_play);
         mBtnDelete = holder.findViewById(R.id.btn_delete);
         mBtnMkwav = holder.findViewById(R.id.btn_mkwav);
+        mBtnMp3 = holder.findViewById(R.id.btn_mkmp3);
     }
 
     @Override
@@ -62,6 +64,7 @@ public class AudioWavFileAdapterItem implements IAdapterViewItem<Object> {
         mBtnPlay.setOnClickListener(onClickListener);
         mBtnDelete.setOnClickListener(onClickListener);
         mBtnMkwav.setVisibility(View.GONE);
+        mBtnMp3.setVisibility(View.GONE);
     }
 
 }

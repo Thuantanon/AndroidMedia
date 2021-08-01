@@ -6,6 +6,7 @@ import android.widget.Button;
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
 import com.cxh.androidmedia.beans.AudioFileEntity;
+import com.cxh.androidmedia.beans.MediaFileWrapper;
 import com.cxh.androidmedia.common.CommonBaseRVHolder;
 import com.cxh.androidmedia.common.IAdapterViewItem;
 import com.cxh.androidmedia.utils.FileUtil;
@@ -15,16 +16,16 @@ import com.cxh.androidmedia.utils.FileUtil;
  * Time : 2018-09-26  11:18
  * Desc :
  */
-public class AudioMp3FileAdapterItem implements IAdapterViewItem<Object> {
+public class AudioPlayAdapterItem implements IAdapterViewItem<Object> {
 
     private Button mBtnPlay;
     private Button mBtnDelete;
     private Button mBtnMkwav;
     private Button mBtnMp3;
 
-    private MultiTypeRvAdapter.AudioCallback mCallback;
+    private MultiTypeRvAdapter.AudioPlayCallback mCallback;
 
-    public AudioMp3FileAdapterItem(MultiTypeRvAdapter.AudioCallback callback) {
+    public AudioPlayAdapterItem(MultiTypeRvAdapter.AudioPlayCallback callback) {
         mCallback = callback;
     }
 
@@ -43,30 +44,27 @@ public class AudioMp3FileAdapterItem implements IAdapterViewItem<Object> {
 
     @Override
     public void onBindData(CommonBaseRVHolder<Object> holder, Object data, int position) {
-        final AudioFileEntity entity = (AudioFileEntity) data;
+        final MediaFileWrapper wrapper = (MediaFileWrapper) data;
 
-        holder.setText(R.id.file_name, entity.getAudioAbsolutePath());
-        holder.setText(R.id.file_size, FileUtil.getFileSize(entity.getAudioAbsolutePath()));
+        holder.setText(R.id.file_name, wrapper.getFile().getAbsolutePath());
+        holder.setText(R.id.file_size, FileUtil.getFileSize(wrapper.getFile().getAbsoluteFile()));
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null == mCallback) {
-                    return;
+                if (v == mBtnPlay && null != mCallback) {
+                    mCallback.play(wrapper.getFile());
                 }
 
-                if (v == mBtnDelete) {
-                    mCallback.delete(entity);
-                } else if (v == mBtnPlay) {
-                    mCallback.playMp3(entity);
+                if (v == mBtnDelete && null != mCallback) {
+                    mCallback.delete(wrapper.getFile());
                 }
             }
         };
 
-        mBtnDelete.setOnClickListener(onClickListener);
         mBtnPlay.setOnClickListener(onClickListener);
+        mBtnDelete.setOnClickListener(onClickListener);
         mBtnMkwav.setVisibility(View.GONE);
-        mBtnPlay.setVisibility(View.VISIBLE);
         mBtnMp3.setVisibility(View.GONE);
     }
 

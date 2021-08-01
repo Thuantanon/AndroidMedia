@@ -17,6 +17,7 @@ import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
 import com.cxh.androidmedia.base.BaseActivity;
 import com.cxh.androidmedia.beans.AudioFileEntity;
 import com.cxh.androidmedia.common.CommonPagerAdapter;
+import com.cxh.androidmedia.manager.MediaPlayManager;
 import com.cxh.androidmedia.manager.RecorderManager;
 import com.cxh.androidmedia.utils.AsyncTask;
 import com.cxh.androidmedia.utils.FileUtil;
@@ -154,17 +155,31 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
         List<Object> wavList = new ArrayList<>();
         List<Object> mp3List = new ArrayList<>();
 
-        File rootPath = new File(FileUtil.PATH_AUDIO);
-        if (rootPath.isDirectory() && null != rootPath.listFiles()) {
-            File[] audios = rootPath.listFiles();
-            List<File> files = new ArrayList<>();
-            Collections.addAll(files, audios);
-            for (File f : files) {
-                if (f.isFile() && f.getName().endsWith(".pcm")) {
+        File rootPath = new File(FileUtil.PATH_AUDIO_PCM);
+        if (rootPath.isDirectory()) {
+            File[] files = rootPath.listFiles();
+            if (null != files) {
+                for (File f : files) {
                     pcmList.add(new AudioFileEntity(f.getAbsolutePath(), f.getName()));
-                } else if (f.isFile() && f.getName().endsWith(".wav")) {
+                }
+            }
+        }
+
+        rootPath = new File(FileUtil.PATH_AUDIO_WAV);
+        if (rootPath.isDirectory()) {
+            File[] files = rootPath.listFiles();
+            if (null != files) {
+                for (File f : files) {
                     wavList.add(new AudioFileEntity(f.getAbsolutePath(), f.getName(), AudioFileEntity.AUDIO_TYPE_WAV));
-                } else if (f.isFile() && f.getName().endsWith(".mp3")) {
+                }
+            }
+        }
+
+        rootPath = new File(FileUtil.PATH_AUDIO_MP3);
+        if (rootPath.isDirectory()) {
+            File[] files = rootPath.listFiles();
+            if (null != files) {
+                for (File f : files) {
                     mp3List.add(new AudioFileEntity(f.getAbsolutePath(), f.getName(), AudioFileEntity.AUDIO_TYPE_MP3));
                 }
             }
@@ -195,6 +210,11 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
             getHandler().removeMessages(MSG_PLAY_WAV);
             getHandler().sendEmptyMessageDelayed(MSG_PLAY_WAV, 1000);
         }
+    }
+
+    @Override
+    public void playMp3(AudioFileEntity entity) {
+        MediaPlayManager.playMp3(mContext, entity.getAudioAbsolutePath());
     }
 
     @Override
@@ -231,7 +251,7 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
         String filePath = entity.getAudioAbsolutePath();
         final File pcmFile = new File(filePath);
         if (pcmFile.exists()) {
-            final File wavFile = new File(pcmFile.getParent(), pcmFile.getName().replace(".pcm", ".wav"));
+            final File wavFile = new File(FileUtil.PATH_AUDIO_WAV, pcmFile.getName().replace(".pcm", ".wav"));
             new AsyncTask<Boolean>() {
 
                 @Override
@@ -263,7 +283,7 @@ public class AudioRecordActivity extends BaseActivity implements MultiTypeRvAdap
         String filePath = entity.getAudioAbsolutePath();
         final File pcmFile = new File(filePath);
         if (pcmFile.exists()) {
-            final File mp3File = new File(pcmFile.getParent(), pcmFile.getName().replace(".pcm", ".mp3"));
+            final File mp3File = new File(FileUtil.PATH_AUDIO_MP3, pcmFile.getName().replace(".pcm", ".mp3"));
             new AsyncTask<Boolean>() {
 
                 @Override

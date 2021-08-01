@@ -21,6 +21,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
 import com.cxh.androidmedia.base.BaseActivity;
+import com.cxh.androidmedia.beans.MediaFileWrapper;
+import com.cxh.androidmedia.manager.VideoParseManager;
 import com.cxh.androidmedia.utils.CCLog;
 import com.cxh.androidmedia.utils.FileUtil;
 import com.cxh.androidmedia.utils.ToastUtil;
@@ -53,7 +55,6 @@ public class MediaCodec1Activity extends BaseActivity implements MultiTypeRvAdap
     private MultiTypeRvAdapter mAdapter;
     private Handler mIOHandler;
     private List<Object> mFileList = new ArrayList<>();
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected int getLayoutRes() {
@@ -165,7 +166,7 @@ public class MediaCodec1Activity extends BaseActivity implements MultiTypeRvAdap
                 }
 
                 if (null != h264File && h264File.exists() && null != aacFile && aacFile.exists()) {
-                    parseH264File(h264File);
+                    // parseH264File(h264File);
                 } else {
                     CCLog.i("h264File: " + h264File + " , aacFile: " + aacFile);
                 }
@@ -179,7 +180,9 @@ public class MediaCodec1Activity extends BaseActivity implements MultiTypeRvAdap
         if (rooPath.exists() && rooPath.isDirectory()) {
             File[] files = rooPath.listFiles();
             if (null != files && files.length > 0) {
-                mFileList.addAll(Arrays.asList(files));
+                for (File f : files) {
+                    mFileList.add(new MediaFileWrapper(f, MediaFileWrapper.TYPE_VIDEO));
+                }
             }
         }
 
@@ -195,163 +198,23 @@ public class MediaCodec1Activity extends BaseActivity implements MultiTypeRvAdap
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showProgressDialog();
+                showProgressDialog("视频解析中...");
             }
         });
 
         Uri uri = intent.getData();
         if (null != uri) {
-            parseVideo(uri);
+            VideoParseManager.parseAndMuxer(mContext, uri, FileUtil.PATH_VIDEO_CACHE);
         }
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                closeDialog();
+                loadVideoFiles();
+                closeProgressDialog();
             }
         });
     }
-
-    private void parseVideo(final Uri videoUri) {
-        CCLog.i("parseVideoInfo, videoPath : " + videoUri);
-
-        MediaExtractor extractor = null;
-        FileOutputStream outputStreamH264 = null;
-        FileOutputStream outputStreamAAC = null;
-        MediaMuxer mediaMuxer = null;
-        try {
-            extractor = new MediaExtractor();
-            extractor.setDataSource(mContext, videoUri, null);
-            String fileName = FileUtil.getTimeFormat();
-
-            // 视频混合
-            String newVideoName = FileUtil.PATH_VIDEO_CACHE + File.separator + fileName + ".mp4";
-            mediaMuxer = new MediaMuxer(newVideoName, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-            int audioTrackIndex = -1;
-            int videoTrackIndex = -1;
-
-            for (int i = 0; i < extractor.getTrackCount(); i++) {
-                MediaFormat mediaFormat = extractor.getTrackFormat(i);
-                String mimeType = mediaFormat.getString(MediaFormat.KEY_MIME);
-                int maxInputSize = mediaFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE);
-
-                ByteBuffer byteBuffer = ByteBuffer.allocate(maxInputSize);
-                extractor.selectTrack(i);
-                if (MediaFormat.MIMETYPE_VIDEO_AVC.equals(mimeType)) {
-                    String videoFileName = FileUtil.PATH_VIDEO_CACHE + File.separator + fileName + ".h264";
-                    outputStreamH264 = new FileOutputStream(videoFileName);
-                    videoTrackIndex = mediaMuxer.addTrack(mediaFormat);
-
-                    while (true) {
-                        int readByteCount = extractor.readSampleData(byteBuffer, 0);
-                        if (readByteCount <= 0) {
-                            break;
-                        }
-
-                        byte[] buffer = new byte[readByteCount];
-                        byteBuffer.get(buffer);
-                        outputStreamH264.write(buffer);
-                        byteBuffer.clear();
-                        extractor.advance();
-                    }
-
-                } else if (MediaFormat.MIMETYPE_AUDIO_AAC.equals(mimeType)) {
-                    String videoFileName = FileUtil.PATH_VIDEO_CACHE + File.separator + fileName + ".aac";
-                    outputStreamAAC = new FileOutputStream(videoFileName);
-                    audioTrackIndex = mediaMuxer.addTrack(mediaFormat);
-
-                    while (true) {
-                        int readByteCount = extractor.readSampleData(byteBuffer, 0);
-                        if (readByteCount <= 0) {
-                            break;
-                        }
-
-                        byte[] buffer = new byte[readByteCount];
-                        byteBuffer.get(buffer);
-                        outputStreamAAC.write(buffer);
-                        byteBuffer.clear();
-                        extractor.advance();
-                    }
-                }
-
-                extractor.unselectTrack(i);
-            }
-
-            CCLog.i("videoTrack: " + videoTrackIndex + " , audioTrack: " + audioTrackIndex);
-            extractor.release();
-            extractor = new MediaExtractor();
-            extractor.setDataSource(mContext, videoUri, null);
-
-            // 为了方便，直接在这里重新合成
-            mediaMuxer.start();
-            MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
-            for (int i = 0; i < extractor.getTrackCount(); i++) {
-                MediaFormat mediaFormat = extractor.getTrackFormat(i);
-                String mimeType = mediaFormat.getString(MediaFormat.KEY_MIME);
-                int maxInputSize = mediaFormat.getInteger(MediaFormat.KEY_MAX_INPUT_SIZE);
-                ByteBuffer byteBuffer = ByteBuffer.allocate(maxInputSize);
-                extractor.selectTrack(i);
-
-                CCLog.i("startMuxer, maxInputSize: " + maxInputSize);
-
-                if (MediaFormat.MIMETYPE_VIDEO_AVC.equals(mimeType)) {
-                    while (true) {
-                        int readByteCount = extractor.readSampleData(byteBuffer, 0);
-                        if (readByteCount <= 0) {
-                            break;
-                        }
-
-                        bufferInfo.size = readByteCount;
-                        bufferInfo.offset = 0;
-                        bufferInfo.flags = extractor.getSampleFlags();
-                        bufferInfo.presentationTimeUs = extractor.getSampleTime();
-                        mediaMuxer.writeSampleData(videoTrackIndex, byteBuffer, bufferInfo);
-
-                        byteBuffer.clear();
-                        extractor.advance();
-                    }
-                } else if (MediaFormat.MIMETYPE_AUDIO_AAC.equals(mimeType)) {
-                    while (true) {
-                        int readByteCount = extractor.readSampleData(byteBuffer, 0);
-                        if (readByteCount <= 0) {
-                            break;
-                        }
-
-                        bufferInfo.size = readByteCount;
-                        bufferInfo.offset = 0;
-                        bufferInfo.flags = extractor.getSampleFlags();
-                        bufferInfo.presentationTimeUs = extractor.getSampleTime();
-                        mediaMuxer.writeSampleData(audioTrackIndex, byteBuffer, bufferInfo);
-
-                        byteBuffer.clear();
-                        extractor.advance();
-                    }
-                }
-            }
-
-            mediaMuxer.stop();
-            mediaMuxer.release();
-            mediaMuxer = null;
-
-            toastMessage("已解析文件：" + extractor.getTrackCount(), true);
-        } catch (IOException e) {
-            e.printStackTrace();
-            CCLog.i("parseVideoInfo, e:" + e.toString());
-        } finally {
-            FileUtil.tryClose(outputStreamH264);
-            FileUtil.tryClose(outputStreamAAC);
-
-            if (null != extractor) {
-                extractor.release();
-            }
-
-            if (null != mediaMuxer) {
-                mediaMuxer.stop();
-                mediaMuxer.release();
-            }
-        }
-    }
-
 
     private void parseH264File(File h264File) {
         MediaExtractor extractor = null;
@@ -375,34 +238,6 @@ public class MediaCodec1Activity extends BaseActivity implements MultiTypeRvAdap
                 extractor.release();
                 extractor = null;
             }
-        }
-    }
-
-    private void toastMessage(String message, boolean refresh) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtil.show(mContext, message);
-
-                if (refresh) {
-                    loadVideoFiles();
-                }
-            }
-        });
-    }
-
-    private void showProgressDialog() {
-        mProgressDialog = new ProgressDialog(mContext);
-        mProgressDialog.setTitle("视频解析中...");
-        mProgressDialog.setCanceledOnTouchOutside(false);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
-    }
-
-    private void closeDialog() {
-        if (null != mProgressDialog && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-            mProgressDialog = null;
         }
     }
 }

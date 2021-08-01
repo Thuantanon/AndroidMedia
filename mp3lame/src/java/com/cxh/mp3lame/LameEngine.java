@@ -14,6 +14,7 @@ public class LameEngine {
     public static final int BIT_RATE_16 = 16;
 
     public static final int CHANNEL_MONO = 1;
+    public static final int CHANNEL_ = 2;
 
     static {
         System.loadLibrary("mp3lame");

@@ -5,6 +5,7 @@ import android.widget.Button;
 
 import com.cxh.androidmedia.R;
 import com.cxh.androidmedia.adapter.MultiTypeRvAdapter;
+import com.cxh.androidmedia.beans.MediaFileWrapper;
 import com.cxh.androidmedia.common.CommonBaseRVHolder;
 import com.cxh.androidmedia.common.IAdapterViewItem;
 import com.cxh.androidmedia.utils.FileUtil;
@@ -23,9 +24,11 @@ public class VideoFileItem implements IAdapterViewItem<Object> {
     private Button mBtnMuxer;
 
     private MultiTypeRvAdapter.VideoCallback mCallback;
+    private boolean mVideoDecode;
 
-    public VideoFileItem(MultiTypeRvAdapter.VideoCallback videoCallback) {
+    public VideoFileItem(MultiTypeRvAdapter.VideoCallback videoCallback, boolean videoDecode) {
         mCallback = videoCallback;
+        mVideoDecode = videoDecode;
     }
 
     @Override
@@ -42,10 +45,10 @@ public class VideoFileItem implements IAdapterViewItem<Object> {
 
     @Override
     public void onBindData(CommonBaseRVHolder<Object> holder, Object data, int position) {
-        File file = (File) data;
+        MediaFileWrapper wrapper = (MediaFileWrapper) data;
 
-        holder.setText(R.id.file_name, file.getAbsolutePath());
-        holder.setText(R.id.file_size, FileUtil.getFileSize(file));
+        holder.setText(R.id.file_name, wrapper.getFile().getAbsolutePath());
+        holder.setText(R.id.file_size, FileUtil.getFileSize(wrapper.getFile()));
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -55,15 +58,15 @@ public class VideoFileItem implements IAdapterViewItem<Object> {
                 }
 
                 if (v == mBtnPlay) {
-                    mCallback.play(file);
+                    mCallback.play(wrapper.getFile());
                 }
 
                 if (v == mBtnDelete) {
-                    mCallback.delete(file);
+                    mCallback.delete(wrapper.getFile());
                 }
 
                 if (v == mBtnMuxer) {
-                    mCallback.selected(file);
+                    mCallback.selected(wrapper.getFile());
                 }
             }
         };
@@ -72,11 +75,11 @@ public class VideoFileItem implements IAdapterViewItem<Object> {
         mBtnDelete.setOnClickListener(onClickListener);
         mBtnMuxer.setOnClickListener(onClickListener);
 
-        if (file.getAbsolutePath().endsWith("mp4")) {
+        if (wrapper.getFile().getAbsolutePath().endsWith("mp4")) {
             mBtnMuxer.setVisibility(View.GONE);
             mBtnPlay.setVisibility(View.VISIBLE);
         } else {
-            mBtnMuxer.setVisibility(View.VISIBLE);
+            mBtnMuxer.setVisibility(mVideoDecode ? View.VISIBLE : View.GONE);
             mBtnPlay.setVisibility(View.GONE);
         }
     }

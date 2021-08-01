@@ -11,6 +11,7 @@ import com.cxh.androidmedia.base.BaseActivity;
 public class MediaCodec3Activity extends BaseActivity {
 
 
+
     @Override
     protected int getLayoutRes() {
         return R.layout.activity_mediacodec_3;

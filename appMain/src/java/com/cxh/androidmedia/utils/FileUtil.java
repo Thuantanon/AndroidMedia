@@ -42,6 +42,12 @@ public class FileUtil {
     public static final String PATH_VIDEO = ROOT_PATH + File.separator + "video";
     public static final String PATH_IMAGE = ROOT_PATH + File.separator + "image";
     // 子目录
+    // pcm
+    public static final String PATH_AUDIO_PCM = PATH_AUDIO + File.separator + "pcm";
+    // wav
+    public static final String PATH_AUDIO_MP3 = PATH_AUDIO + File.separator + "mp3";
+    // mp3
+    public static final String PATH_AUDIO_WAV = PATH_AUDIO + File.separator + "wav";
     // 截屏
     public static final String PATH_IMAGE_SHOT = PATH_IMAGE + File.separator + "screenshot";
     // 拍照
@@ -56,6 +62,9 @@ public class FileUtil {
     static {
         checkMediaDir(ROOT_PATH);
         checkMediaDir(PATH_AUDIO);
+        checkMediaDir(PATH_AUDIO_PCM);
+        checkMediaDir(PATH_AUDIO_MP3);
+        checkMediaDir(PATH_AUDIO_WAV);
         checkMediaDir(PATH_VIDEO);
         checkMediaDir(PATH_IMAGE_SHOT);
         checkMediaDir(PATH_IMAGE_PHOTO);
@@ -90,11 +99,7 @@ public class FileUtil {
     }
 
     public static String getRandomPCMFile() {
-        File file = new File(PATH_AUDIO);
-        if (!file.exists()) {
-            boolean b = file.mkdirs();
-        }
-        return PATH_AUDIO + File.separator + getTimeFormat() + ".pcm";
+        return getTimeFormat() + ".pcm";
     }
 
     public static String getTimeFormat() {
@@ -110,7 +115,6 @@ public class FileUtil {
             }
         }
     }
-
 
     public static String getFileSize(String file) {
         return getFileSize(new File(file));

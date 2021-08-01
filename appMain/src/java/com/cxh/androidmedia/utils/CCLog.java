@@ -19,4 +19,8 @@ public class CCLog {
     public static void i(String tag, String message) {
         Log.i(tag, message);
     }
+
+    public static void e(String message) {
+        Log.e(TAG, message);
+    }
 }
