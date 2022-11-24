@@ -31,7 +31,7 @@ public class BaseGLRender implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-
+        GLES30.glClearColor(0f, 0f, 0f, 0f);
     }
 
     @Override

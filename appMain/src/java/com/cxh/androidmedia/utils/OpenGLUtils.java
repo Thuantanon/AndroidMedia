@@ -240,6 +240,15 @@ public class OpenGLUtils {
         GLES30.glUniform2fv(location, 1, value, 0);
     }
 
+    public static void setUniformMatrix4fv(int programId, String name, float[] matrix) {
+        if (null != matrix && matrix.length == 16) {
+            int location = GLES30.glGetUniformLocation(programId, name);
+            GLES30.glUniformMatrix4fv(location, 1, false, matrix, 0);
+        } else {
+            CCLog.e("setUniformMatrix4fv, invalid matrix!");
+        }
+    }
+
     public static void checkGLError() {
         CCLog.i("checkGLError, code: " + GLES30.glGetError());
     }

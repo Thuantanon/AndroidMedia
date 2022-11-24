@@ -160,6 +160,11 @@
             android:name=".activity.mediacodec.Camera2RecorderActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.opengles.GLFrustumActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

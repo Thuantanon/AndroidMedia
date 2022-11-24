@@ -15,6 +15,7 @@ import com.cxh.androidmedia.activity.mediacodec.MediaCodec2Activity;
 import com.cxh.androidmedia.activity.mediacodec.MediaCodec3Activity;
 import com.cxh.androidmedia.activity.opengles.FBOProcessActivity;
 import com.cxh.androidmedia.activity.opengles.GLCamera1Activity;
+import com.cxh.androidmedia.activity.opengles.GLFrustumActivity;
 import com.cxh.androidmedia.activity.opengles.GLRenderActivity;
 import com.cxh.androidmedia.activity.opengles.GLFilterActivity;
 import com.cxh.androidmedia.activity.opengles.GLFeatureActivity;
@@ -116,7 +117,7 @@ public class MainActivity extends BaseActivity {
 
         addPages();
 
-        mViewPager.setCurrentItem(1);
+//        mViewPager.setCurrentItem(1);
     }
 
     private void addPages() {
@@ -127,7 +128,10 @@ public class MainActivity extends BaseActivity {
         pages1.add(new ActivityBean("OpenGL ES的VBO、ABO、FBO特性", GLFeatureActivity.class));
         pages1.add(new ActivityBean("OpenGL ES的FBO离屏渲染", FBOProcessActivity.class));
         pages1.add(new ActivityBean("OpenGL ES、SurfaceView美颜相机", GLCamera1Activity.class));
-        pages1.add(new ActivityBean("OpenGL ES、Camera2美颜相机", GLCamera2Activity.class));
+//        pages1.add(new ActivityBean("OpenGL ES、Camera2美颜相机", GLCamera2Activity.class));
+        pages1.add(new ActivityBean("OpenGL ES透视投影", GLFrustumActivity.class));
+
+
         mAdapter1.setList(pages1);
 
         List<Object> pages2 = new ArrayList<>();
